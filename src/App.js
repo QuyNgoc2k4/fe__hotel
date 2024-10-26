@@ -1,7 +1,7 @@
 // src/App.js
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import DashboardLayout from "./layouts/DashboardLayout";
+import Sidebar from "./layouts/Sidebar";
 import UserList from "./pages/UserList";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -16,12 +16,12 @@ const App = () => {
           path="/*"
           element={
             <PrivateRoute>
-              <DashboardLayout>
+              <Dashboard>
                 <Routes>
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/users" element={<UserList />} />
                 </Routes>
-              </DashboardLayout>
+              </Dashboard>
             </PrivateRoute>
           }
         />

@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import COVER_IMAGE from "../assets/image-login-room.jpg";
 import LOGO_IMAGE from "../assets/final-16.png";
 import { useForm } from "react-hook-form";
-import "../App.css";
 
 const Login = () => {
   const navigate = useNavigate();
