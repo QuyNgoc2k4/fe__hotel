@@ -4,6 +4,7 @@ module.exports = {
     './src/**/*.{js,jsx,ts,tsx}', 
   ],
   theme: {
+  
     keyframes: {
       "accordion-down": {
         from: { height: "0" },

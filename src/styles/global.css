@@ -1,8 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+:root{
+  --primary-color: rgba(132, 90, 223, 1);
+  --secondary-color: rgba(35, 183, 299,1);
+}
+body{
+  background-color: rgba(240, 241, 247, 1) !important;
+}
 /* src/styles/global.css */
+.page{
+  height: 100vh;
+}
+/* header */
+.app-header{
+  padding-left: 240px;
+}
+.main-header{
+  padding: 0 15px;
+}
+.header-link{
+  padding: 1rem 0.8rem;
+}
+.header-link-icon{
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #536485;
+}
 
+.badge-bell{
+  top: 4px; 
+  right: 2px;
+  font-size: 10px;
+  background-color: var(--primary-color);
+
+}
 /* Accordion */
 
 .sildebar-accordion .border-b{
@@ -24,4 +57,13 @@
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+
+
+/* main content */
+.main-content{
+  margin-left: 240px;
+  margin-top: 3.6rem;
+  height: calc(100vh - 50px);
 }

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { message } from "antd";
-import { GoogleLogin } from "@react-oauth/google"; // Thêm phần này
+import { GoogleLogin } from "@react-oauth/google";
 import authApi from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import COVER_IMAGE from "../assets/image-login-room.jpg";
@@ -11,7 +11,7 @@ import "../App.css";
 const Login = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [loadingApi, setLoadingApi] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -19,7 +19,13 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    // Kiểm tra nếu đã có token trong localStorage, chuyển hướng tới trang dashboard
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -29,16 +35,18 @@ const Login = () => {
         password: values.password,
       });
 
-      if (response.status === 201) {
+      if (response.data.status === 'success') {
         message.success(response.data.message);
         localStorage.setItem("token", response.data.data.token);
         navigate("/dashboard");
+      }else if (response.data.status === 'error'){
+        message.error(response.data.message);
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         message.error("Thông tin đăng nhập không hợp lệ.");
       } else {
-        message.error("Đã xảy ra lỗi khi đăng nhập.");
+        // message.error("Đã xảy ra lỗi khi đăng nhập.");
       }
     } finally {
       setLoading(false);
@@ -47,7 +55,7 @@ const Login = () => {
 
   const handleGoogleLoginSuccess = async (response) => {
     try {
-      const googleToken = response.credential; // Lấy token từ Google
+      const googleToken = response.credential;
       console.log("Google ID Token:", googleToken);
 
       const res = await authApi.loginWithGoogle({ idToken: googleToken });
@@ -69,7 +77,6 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen flex flex-col lg:flex-row items-start">
-      {/* Left section (Cover Image) */}
       <div className="relative w-full lg:w-1/2 h-1/2 lg:h-full flex flex-col">
         <div className="absolute top-[25%] left-[10%] flex flex-col">
           <h1 className="text-3xl lg:text-4xl text-white font-bold my-4">
@@ -79,23 +86,21 @@ const Login = () => {
             Moka Vietnam Hotel Chain Management System
           </p>
         </div>
-        <img src={COVER_IMAGE} className="w-full h-full object-cover" />
+        <img src={COVER_IMAGE} className="w-full h-full object-cover" alt="Cover" />
       </div>
 
-      {/* Right section (Form) */}
       <div className="w-full lg:w-1/2 h-1/2 lg:h-full bg-[#f5f5f5] flex flex-col p-6 lg:p-20 justify-between items-center">
-        {/* Logo Section */}
         <div className="w-full max-w-[500px] flex items-center mx-auto mb-8 lg:mb-0">
           <img
             src={LOGO_IMAGE}
             className="w-12 h-12 lg:w-16 lg:h-16 object-cover mr-2"
+            alt="Logo"
           />
           <h1 className="text-lg lg:text-xl text-[#060606] font-semibold">
             Moka Hotel System
           </h1>
         </div>
 
-        {/* Form Section */}
         <div className="w-full flex flex-col max-w-[500px]">
           <form onSubmit={handleSubmit(onFinish)}>
             <div className="w-full flex flex-col mb-2">
@@ -105,7 +110,6 @@ const Login = () => {
               </p>
             </div>
 
-            {/* Input Fields */}
             <div className="w-full flex flex-col">
               <input
                 type="text"
@@ -154,7 +158,6 @@ const Login = () => {
               )}
             </div>
 
-            {/* Remember Me and Forgot Password */}
             <div className="w-full flex items-center justify-between">
               <div className="flex items-center">
                 <input type="checkbox" className="w-4 h-4 mr-2" />
@@ -165,19 +168,21 @@ const Login = () => {
               </p>
             </div>
 
-            {/* Buttons */}
             <div className="w-full flex flex-col my-4">
               <button
                 type="submit"
                 className="w-full text-white bg-[#060606] font-semibold rounded-md my-2 p-2 text-center flex items-center justify-center"
+                disabled={loading}
               >
-                {loadingApi && <i className="fa-solid fa-sync fa-spin"></i>}
-                &nbsp;Login
+                {loading ? (
+                  <i className="fa-solid fa-sync fa-spin"></i>
+                ) : (
+                  "Login"
+                )}
               </button>
             </div>
           </form>
 
-          {/* Divider */}
           <div className="w-full flex items-center justify-center relative py-2">
             <div className="w-full h-[1px] bg-black/40"></div>
             <p className="text-sm lg:text-lg absolute text-black/80 bg-[#f5f5f5] px-2">
@@ -185,14 +190,12 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Google Login */}
           <GoogleLogin
             onSuccess={handleGoogleLoginSuccess}
             onError={handleGoogleLoginFailure}
             useOneTap
           />
 
-          {/* Sign Up Section */}
           <div className="w-full flex items-center justify-center">
             <p className="text-sm font-semibold text-[#060606]">
               Don't have an account?{" "}

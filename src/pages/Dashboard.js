@@ -1,17 +1,8 @@
-// src/pages/Dashboard.js
+// src/pages/Admin/Dashboard.js
 import React from "react";
-import { Card, Col, Row } from "antd";
-import Header from "../layouts/Header";
-import Sidebar from "../layouts/Sidebar";
 
 const Dashboard = () => {
-  console.log("API ENV Variable:", process.env.REACT_APP_API);
-  return (
-    <div className="page">
-      {/* <Header/> */}
-      <Sidebar/>
-    </div>
-  );
+  return <div>Đây là trang Dashboard quản lý</div>;
 };
 
 export default Dashboard;

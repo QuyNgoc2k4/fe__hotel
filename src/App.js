@@ -1,31 +1,12 @@
 // src/App.js
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Sidebar from "./layouts/Sidebar";
-import UserList from "./pages/UserList";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import PrivateRoute from "./components/PrivateRoute";
+import { BrowserRouter as Router } from "react-router-dom";
+import AppRoutes from "./routers/AppRoutes";
 
 const App = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/*"
-          element={
-            <PrivateRoute>
-              <Dashboard>
-                <Routes>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/users" element={<UserList />} />
-                </Routes>
-              </Dashboard>
-            </PrivateRoute>
-          }
-        />
-      </Routes>
+      <AppRoutes />
     </Router>
   );
 };
