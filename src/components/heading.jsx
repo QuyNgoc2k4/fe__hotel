@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,7 +11,7 @@ interface PageHeadingProps{
     title: string,
     route: string,
   }
-}
+};
 
 const PageHeading: React.FC<PageHeadingProps> = ({breadcrumb}) => {
   return (
@@ -21,13 +22,13 @@ const PageHeading: React.FC<PageHeadingProps> = ({breadcrumb}) => {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                <Link to="/dashboard">Dashboard</Link>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={breadcrumb.route}>
+                <Link to={breadcrumb.route}>
                   {breadcrumb.title}
-                </BreadcrumbLink>
+                </Link>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

@@ -1,8 +1,17 @@
 // src/pages/Admin/Dashboard.js
 import React from "react";
+import PageHeading from "../components/heading";
 
 const Dashboard = () => {
-  return <div>Đây là trang Dashboard quản lý</div>;
+  const breadcrumb ={
+    title: 'Thống kê chung',
+    route: '/dashboard',
+  }
+  return (
+    <>
+    <PageHeading breadcrumb={breadcrumb}/>
+    </>
+  )
 };
 
 export default Dashboard;

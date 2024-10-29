@@ -59,8 +59,8 @@ const Header = () => {
                     <div className="role text-xs text-[#536485]">Administrator</div>
                 </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuContent className="bg-white">
+                <DropdownMenuLabel className="border-b border-solid border-[#f3f3f3]">My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-[#333335] cursor-pointer">
                   <CgProfile />

@@ -25,7 +25,7 @@ export const sidebarItem = [
                 label: 'User management',
                 links: [
                     {title: ' Quản lý admin ', to: '/user/catalogue/index'},
-                    {title: ' Quản lý nhân viên', to: '/user/index'},
+                    {title: ' Quản lý nhân viên', to: '/user/employee'},
                     {title: ' Quản lý khách hàng', to: '/user/customer'}
                 ]
             },
