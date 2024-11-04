@@ -56,7 +56,6 @@ const Login = () => {
   const handleGoogleLoginSuccess = async (response) => {
     try {
       const googleToken = response.credential;
-      console.log("Google ID Token:", googleToken);
 
       const res = await authApi.loginWithGoogle({ idToken: googleToken });
       if (res.data.status === "success") {

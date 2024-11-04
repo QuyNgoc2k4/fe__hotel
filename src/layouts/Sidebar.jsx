@@ -21,6 +21,25 @@ const Sidebar = ({ children }) => {
   };
 
   const location = useLocation()
+  const segment = location.pathname.split('/')[1];
+
+  
+    const getOpenAccordionValue = () => {
+      for (let groupIndex = 0; groupIndex < sidebarItem.length; groupIndex++) {
+        const group = sidebarItem[groupIndex];
+        for (let itemIndex = 0; itemIndex < group.items.length; itemIndex++) {
+          const item = group.items[itemIndex];
+          if (item.active?.includes(segment)) {
+            return `item-${groupIndex}-${itemIndex}`;
+          }
+        }
+      }
+    };
+    const defaultValue = getOpenAccordionValue();
+    
+    
+ 
+  
 
   return (
     
@@ -41,10 +60,12 @@ const Sidebar = ({ children }) => {
                 type="single"
                 collapsible
                 className="px-3 sildebar-accordion"
+                defaultValue={defaultValue}
               >
                 {group.items.map((item, itemIndex) => (
                   <AccordionItem key={itemIndex} value={`item-${index}-${itemIndex}`} className="mb-1">
-                    <AccordionTrigger className="rounded-lg text-[#a3aed1]  bg-[rgba(255,255,255,0.05)] px-2">
+                    <AccordionTrigger className={`rounded-lg px-2 text-[#a3aed1] ${item.active?.includes(segment) ? 'bg-[rgba(255,255,255,0.05)] text-white' : ''}`} >
+
                       <div>
                         {item.icon}&nbsp;&nbsp;
                         <span>{item.label}</span>

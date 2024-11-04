@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 :root{
-  --primary-color: rgba(132, 90, 223, 1);
+  --primary-color: #0088FF;
   --secondary-color: rgba(35, 183, 299,1);
   --input: 220, 14%, 96%; /* Ví dụ về màu nền input */
   --primary: 240, 6%, 10%, 1; /* Ví dụ về màu nền primary */
