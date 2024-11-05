@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { message } from "antd";
 import { GoogleLogin } from "@react-oauth/google";
 import authApi from "../api/authApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import COVER_IMAGE from "../assets/image-login-room.jpg";
 import LOGO_IMAGE from "../assets/final-16.png";
 import { useForm } from "react-hook-form";
@@ -39,7 +39,7 @@ const Login = () => {
         message.success(response.data.message);
         localStorage.setItem("token", response.data.data.token);
         navigate("/dashboard");
-      }else if (response.data.status === 'error'){
+      } else if (response.data.status === 'error') {
         message.error(response.data.message);
       }
     } catch (error) {
@@ -163,7 +163,9 @@ const Login = () => {
                 <p className="text-sm">Remember me for 30 days</p>
               </div>
               <p className="text-sm font-medium cursor-pointer underline underline-offset-2">
-                Forgot Password?
+                <Link to="/forgot-password">
+                  Forgot Password?
+                </Link>
               </p>
             </div>
 
@@ -195,11 +197,14 @@ const Login = () => {
             useOneTap
           />
 
+          
+        </div>
+        <div className="w-full flex flex-col max-w-[500px]">
           <div className="w-full flex items-center justify-center">
             <p className="text-sm font-semibold text-[#060606]">
-              Don't have an account?{" "}
+              Your account has an issue.
               <span className="font-semibold underline underline-offset-2 cursor-pointer">
-                Sign up for free
+                Please contact the manager for assistance.
               </span>
             </p>
           </div>
