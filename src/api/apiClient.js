@@ -1,24 +1,39 @@
-// src/api/apiClient.js
 import axios from "axios";
+import { message } from "antd";
 
 const apiClient = axios.create({
-  baseURL: "https://leovn.asia/api/v1", 
+  baseURL: "https://leovn.asia/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Thêm interceptor để thêm token Authorization vào tất cả các yêu cầu
+// Request Interceptor: Thêm Authorization header nếu có token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Lấy token từ localStorage (hoặc một nơi khác nếu bạn quản lý khác)
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`; // Thêm token vào header Authorization
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
-    return config; // Trả về config đã được cập nhật
+    return config;
   },
   (error) => {
-    return Promise.reject(error); // Xử lý lỗi nếu có
+    return Promise.reject(error);
+  }
+);
+
+// Response Interceptor: Xử lý lỗi xác thực
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      message.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
+      localStorage.removeItem("token"); // Xóa token
+      window.location.href = "/login"; // Chuyển hướng đến trang đăng nhập
+    } else if (error.response?.status === 500) {
+      message.error("Lỗi server, vui lòng thử lại sau.");
+    }
+    return Promise.reject(error);
   }
 );
 

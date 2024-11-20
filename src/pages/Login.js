@@ -7,6 +7,7 @@ import COVER_IMAGE from "../assets/image-login-room.jpg";
 import LOGO_IMAGE from "../assets/final-16.png";
 import { useForm } from "react-hook-form";
 import "../App.css";
+import LoadingButton from "../components/ui/LoadingButton";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,18 +27,21 @@ const Login = () => {
       navigate("/dashboard");
     }
   }, [navigate]);
-
   const onFinish = async (values) => {
     setLoading(true);
     try {
       const response = await authApi.login({
         email: values.email,
         password: values.password,
+        rememberMe, // Gửi trạng thái checkbox nếu API hỗ trợ
       });
 
       if (response.data.status === 'success') {
         message.success(response.data.message);
         localStorage.setItem("token", response.data.data.token);
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+        }
         navigate("/dashboard");
       } else if (response.data.status === 'error') {
         message.error(response.data.message);
@@ -45,13 +49,12 @@ const Login = () => {
     } catch (error) {
       if (error.response && error.response.status === 400) {
         message.error("Thông tin đăng nhập không hợp lệ.");
-      } else {
-        // message.error("Đã xảy ra lỗi khi đăng nhập.");
       }
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleGoogleLoginSuccess = async (response) => {
     try {
@@ -72,6 +75,11 @@ const Login = () => {
 
   const handleGoogleLoginFailure = () => {
     message.error("Đăng nhập Google thất bại.");
+  };
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked);
   };
 
   return (
@@ -159,7 +167,12 @@ const Login = () => {
 
             <div className="w-full flex items-center justify-between">
               <div className="flex items-center">
-                <input type="checkbox" className="w-4 h-4 mr-2" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 mr-2"
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                />
                 <p className="text-sm">Remember me for 30 days</p>
               </div>
               <p className="text-sm font-medium cursor-pointer underline underline-offset-2">
@@ -170,17 +183,15 @@ const Login = () => {
             </div>
 
             <div className="w-full flex flex-col my-4">
-              <button
-                type="submit"
+              <LoadingButton
+                loading={loading}
+                text="Login"
                 className="w-full text-white bg-[#060606] font-semibold rounded-md my-2 p-2 text-center flex items-center justify-center"
-                disabled={loading}
-              >
-                {loading ? (
-                  <i className="fa-solid fa-sync fa-spin"></i>
-                ) : (
-                  "Login"
-                )}
-              </button>
+              />
+              {/* <button type="submit" className="w-full text-white bg-[#060606] font-semibold rounded-md my-2 p-2 text-center flex items-center justify-center"
+                disabled={loading} >
+                {loading ? ( <i className="fa-solid fa-sync fa-spin"></i>) : ("Login")}
+              </button> */}
             </div>
           </form>
 
@@ -197,7 +208,7 @@ const Login = () => {
             useOneTap
           />
 
-          
+
         </div>
         <div className="w-full flex flex-col max-w-[500px]">
           <div className="w-full flex items-center justify-center">

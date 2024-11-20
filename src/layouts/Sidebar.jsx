@@ -43,7 +43,7 @@ const Sidebar = ({ children }) => {
 
   return (
     
-    <aside className="app-aside w-60 bg-[#111c43] h-full fixed top-0">
+    <aside className="app-aside w-60 bg-[#111c43] h-full fixed top-0 z-[101]">
       <div className="main-slidebar-header w-60 p-3.5 fixed z-10 h-14 text-center border-solid border-b border-[rgba(255,255,255,0.1)]">
         <Link to="/" className="inline-block">
           <img className="h-10" src={LOGO_MOKA}></img>
@@ -64,7 +64,7 @@ const Sidebar = ({ children }) => {
               >
                 {group.items.map((item, itemIndex) => (
                   <AccordionItem key={itemIndex} value={`item-${index}-${itemIndex}`} className="mb-1">
-                    <AccordionTrigger className={`rounded-lg px-2 text-[#a3aed1] ${item.active?.includes(segment) ? 'bg-[rgba(255,255,255,0.05)] text-white' : ''}`} >
+                    <AccordionTrigger className={`rounded-lg px-2 text-[#a3aed1] ${item.active?.includes(segment) ? 'bg-[rgba(255,255,255,0.05)] text-white' : ''} hover:bg-[rgba(255,255,255,0.05)] hover:text-white`} >
 
                       <div>
                         {item.icon}&nbsp;&nbsp;
@@ -99,7 +99,7 @@ const Sidebar = ({ children }) => {
       <div className="main-slidebar-footer w-60 p-3.5 fixed z-10 h-14 text-center border-solid border-t border-[rgba(255,255,255,0.1)]">
         <div
           onClick={handleLogout}
-          className="menu-category px-6  text-[#a3aed1] text-xs tracking-wider font-semibold opacity-50 cursor-pointer"
+          className="menu-category px-6  text-[#a3aed1] hover:text-white text-xs tracking-wider font-semibold opacity-50 cursor-pointer"
         >
           <i className="fa-solid fa-arrow-right-from-bracket"></i>
           &nbsp;&nbsp;LOGOUT

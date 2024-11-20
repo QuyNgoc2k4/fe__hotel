@@ -1,4 +1,4 @@
-//src/hook/useCheckBocState.js
+// src/hook/useCheckBoxState.js
 import { useEffect, useState } from "react";
 
 const useCheckBoxState = (data = []) => {
@@ -10,44 +10,58 @@ const useCheckBoxState = (data = []) => {
     setCheckedState((prevCheckedState) => {
       const updatedCheckedState = { ...prevCheckedState, [id]: !prevCheckedState[id] };
 
-      // Kiểm tra nếu tất cả các checkbox đều được chọn
+      // Kiểm tra nếu tất cả các checkbox trong `data` hiện tại đều được chọn
       const totalItems = data.length;
-      const selectedItems = Object.values(updatedCheckedState).filter(Boolean).length;
+      const selectedItems = data.filter((item) => updatedCheckedState[item.id]).length;
       const allChecked = selectedItems === totalItems;
 
       setCheckedAllState(allChecked);
-
-     
-
       return updatedCheckedState;
     });
   };
 
-  // Xử lý trạng thái "Chọn Tất Cả"
+  // Xử lý trạng thái "Chọn Tất Cả" cho các mục trên trang hiện tại
   const handleCheckAllChange = () => {
     setCheckedState((prevCheckedState) => {
-      const newCheckedState = Object.fromEntries(
-        data.map((item) => [item.id, !checkedAllState])
-      );
+      const newCheckedState = { ...prevCheckedState };
+
+      data.forEach((item) => {
+        newCheckedState[item.id] = !checkedAllState;
+      });
 
       setCheckedAllState(!checkedAllState);
       return newCheckedState;
     });
   };
-    
-  const isAnyChecked = () => Object.values(checkedState).some(value => value)
 
-  // Khởi tạo trạng thái checkbox khi `data` thay đổi
+  // Kiểm tra xem có checkbox nào được chọn không
+  const isAnyChecked = () => Object.values(checkedState).some(value => value);
+
+  // Khởi tạo trạng thái checkbox khi `data` thay đổi, nhưng giữ các lựa chọn trước đó
   useEffect(() => {
-    if (data.length > 0) {
-      const initialCheckBoxState = data.reduce((acc, item) => {
-        acc[item.id] = false;
-        return acc;
-      }, {});
+    setCheckedState((prevCheckedState) => {
+      const newCheckedState = { ...prevCheckedState };
+      let stateChanged = false;
 
-      setCheckedState(initialCheckBoxState);
-      setCheckedAllState(false); // Đặt lại `checkedAllState` ban đầu thành `false`
-    }
+      // Đảm bảo mỗi item trong `data` có trạng thái checked trong `checkedState`
+      data.forEach((item) => {
+        if (!(item.id in newCheckedState)) {
+          newCheckedState[item.id] = false; // Thiết lập ban đầu cho item chưa có trong `checkedState`
+          stateChanged = true; // Đánh dấu rằng chúng ta đã thay đổi trạng thái
+        }
+      });
+
+      // Kiểm tra nếu tất cả các checkbox trên trang hiện tại đều được chọn
+      const allChecked = data.every((item) => newCheckedState[item.id]);
+
+      // Cập nhật `checkedAllState` nếu cần thiết
+      if (allChecked !== checkedAllState) {
+        setCheckedAllState(allChecked);
+      }
+
+      // Chỉ cập nhật trạng thái nếu thực sự có thay đổi
+      return stateChanged ? newCheckedState : prevCheckedState;
+    });
   }, [data]);
 
   return {

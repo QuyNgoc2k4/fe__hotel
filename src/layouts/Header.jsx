@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <header className="app-header h-14 fixed w-full content-center items-center top-0 bg-white">
+    <header className="app-header h-14 fixed w-full content-center items-center top-0 bg-white z-[100]">
       <div className="main-header mx-auto h-full flex items-center justify-between">
         <RiMenu2Fill className="text-[30px] cursor-pointer" />
         <div className="header-right-content flex justify-between items-center">

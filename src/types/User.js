@@ -1,11 +1,12 @@
-// src/types/User.js
 
+// src/types/User.js
 export interface User {
   id: number;
-  avatar_url: string;
   name: string;
   email: string;
   password: string;
   phone: string;
-  role: string;
+  avatar_url?: string;
+  role: string | { name: string };
+  createdAt: string; // Added for creation date
 }

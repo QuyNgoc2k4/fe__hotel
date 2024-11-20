@@ -1,7 +1,6 @@
-//src/components/ui/Filter.js
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import {
+import {   
   Select,
   SelectContent,
   SelectItem,
@@ -15,12 +14,9 @@ import { sort, startDates } from "../../constant/general";
 import { FaPlus } from "react-icons/fa6";
 import useFilterAction from "../../hook/useFilterAction"; 
 import useDebounce from "../../hook/useDebounce"; 
-
-
-
-const Filter = ({ isAnyChecked, checkedState, handleQueryString, openSheet }) => {
+const Filter = ({ isAnyChecked, checkedState,  openSheet }) => {
   const { actionSwitch } = useFilterAction();
-  const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
+  const location = useLocation();
 
   const handleStatus = (value) => {
     const [action, SelectedValue] = value.split('|');
@@ -39,20 +35,14 @@ const Filter = ({ isAnyChecked, checkedState, handleQueryString, openSheet }) =>
     setSearchTerm(value);
   }, 300);
 
-  useEffect(() => {
-    handleQueryString({ ...filters, searchTerm }); 
-  }, [searchTerm]);
+ 
 
   const handleFilter = (value, field) => {
     setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
   };
 
-  useEffect(() => {
-    handleQueryString({ ...filters, searchTerm });
-  }, [filters]);
-
-  // Kiểm tra URL hiện tại
-  const isIndexPage = location.pathname.includes('/user/index'); // Chỉ kiểm tra xem có ở `/user/index` hay không
+ 
+  const isIndexPage = location.pathname.includes('/user/index');
   const shouldShowAddButton = !isIndexPage;
 
   return (
@@ -93,7 +83,7 @@ const Filter = ({ isAnyChecked, checkedState, handleQueryString, openSheet }) =>
           </Select>
         </div>
 
-        {isIndexPage && ( // Hiển thị lọc vai trò chỉ ở trang index
+        {isIndexPage && (
           <div className="mr-[10px]">
             <Select onValueChange={(value) => handleFilter(value, 'role')}>
               <SelectTrigger className="w-[180px]">
@@ -129,12 +119,13 @@ const Filter = ({ isAnyChecked, checkedState, handleQueryString, openSheet }) =>
       </div>
       {shouldShowAddButton && (
         <div className="p-0">
-          <Link to="/user/create">
-          <Button  className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]">
+          <Button 
+            className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]"
+            onClick={() => openSheet({open: true, action:'', id:'34535'})} // Call the openSheet function on click
+          >
             <FaPlus />
-            Thêm mới thành viên
+            Thêm mới khách sạn
           </Button>
-          </Link>
         </div>
       )}
     </div>

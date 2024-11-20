@@ -24,8 +24,9 @@ export const sidebarItem = [
                 active: ['user'],
                 label: 'User management',
                 links: [
-                    {title: ' Quản lý admin ', to: '/user/catalogue/index'},
-                    {title: ' Quản lý nhân viên', to: '/user/employee'},
+                    {title: ' Quản lý chung ', to: '/user/index'},
+                    {title: ' Quản lý admin ', to: '/user/admin'},
+                    {title: ' Quản lý nhân viên', to: '/user/staff'},
                     {title: ' Quản lý khách hàng', to: '/user/customer'}
                 ]
             },
@@ -34,8 +35,8 @@ export const sidebarItem = [
                 active: ['hotel'],                
                 label: 'Hotel management',
                 links: [
-                    {title: ' Quản lý khách sạn', to: '/management/user/account'},
-                    {title: ' Quản lý chi nhánh', to: '/management/user/roles'}
+                    {title: ' Quản lý khách sạn', to: '/hotel/index'},
+                    {title: ' Quản lý chi nhánh', to: '/hotel/index'}
                 ]
             },
             {
