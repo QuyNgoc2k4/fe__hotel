@@ -43,8 +43,8 @@ export const sidebarItem = [
                 icon: <i className="fa-brands fa-buromobelexperte"></i>,
                 label: 'Rom management',
                 links: [
-                    {title: ' Quản lý loại phòng', to: '/management/user/account'},
-                    {title: ' Quản lý phòng', to: '/management/user/roles'}
+                    {title: ' Quản lý phòng', to: '/room/index'},
+                    {title: ' Quản lý loại phòng', to: '/management/user/account'}
                 ]
             }
         ]

@@ -1,9 +1,7 @@
 // src/constant/general.js
 export const sort = [
-    { value: 'id, desc', name: 'ID DESC' },
-    { value: 'id, asc', name: 'ID ASC' },
-    { value: 'name, desc', name: 'Sắp xếp tên A - Z' },
-    { value: 'name, asc', name: 'Sắp xếp tên Z - A' },
+    { value: 'desc', name: 'DESC' },
+    { value: 'asc', name: 'ASC' },
 ];
 
 export const startDates = [

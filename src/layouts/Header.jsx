@@ -63,8 +63,10 @@ const Header = () => {
                 <DropdownMenuLabel className="border-b border-solid border-[#f3f3f3]">My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-[#333335] cursor-pointer">
-                  <CgProfile />
+                  <Link to="/profile" className="flex items-center">
+                  <CgProfile className="mr-2"/>
                   Profile
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-[#333335] cursor-pointer">
                   <IoExitOutline />

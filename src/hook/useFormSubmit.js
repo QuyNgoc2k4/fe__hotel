@@ -9,7 +9,7 @@ const useFormSubmit = (apiFunction: (data: any) => Promise<any>) => {
     onError: (error: any) => {
       const errorMessage =
         error.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại!";
-      console.error("Chi tiết lỗi:", error.response?.data || error.message);
+    //   console.error("Chi tiết lỗi:", error.response?.data || error.message);
       message.error(errorMessage);
     },
   });

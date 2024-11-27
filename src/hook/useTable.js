@@ -8,7 +8,7 @@ const useTable = ({ role }) => {
   const location = useLocation();
 
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5); // Default to 10 items per page
+  const [limit, setLimit] = useState(5); // Default to 5 items per page
   const [filters, setFilters] = useState({});
 
   const fetchData = async () => {
@@ -40,9 +40,16 @@ const useTable = ({ role }) => {
   };
 
   useEffect(() => {
-    const newQueryString = `?searchTerm=${filters.searchTerm || ''}&role=${role || ''}&page=${page}&limit=${limit}`;
-    navigate(newQueryString, { replace: true });
-  }, [page, limit, filters, role, navigate]);
+    const queryParams = new URLSearchParams();
+
+    if (filters.searchTerm) queryParams.append("searchTerm", filters.searchTerm);
+    if (role) queryParams.append("role", role);
+    queryParams.append("page", page);
+    queryParams.append("limit", limit);
+
+    const queryString = queryParams.toString();
+    navigate(queryString ? `?${queryString}` : location.pathname, { replace: true });
+  }, [page, limit, filters, role, navigate, location.pathname]);
 
   return {
     data: data?.users || [],

@@ -8,8 +8,6 @@ import {
   SheetTitle,
 } from "./sheet";
 
-import useSheet from '../../hook/useSheet';
-
 interface CustomSheetProps {
   title: string | undefined;
   isSheetOpen: boolean;
@@ -22,8 +20,8 @@ interface CustomSheetProps {
 const CustomSheet = ({ children, isSheetOpen, closeSheet, title, className, description }: CustomSheetProps) => {
 
   return (
-    <Sheet open={isSheetOpen} onOpenChange={closeSheet} >
-      <SheetContent side="right" className={className ?? ''}>
+    <Sheet open={isSheetOpen} onOpenChange={closeSheet} disableBodyScroll={false}>
+      <SheetContent side="right" className={`${className ?? ''} overflow-y-scroll`}>
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription className="text-[#f00000] text-xs">

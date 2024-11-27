@@ -1,21 +1,33 @@
-import { useEffect } from "react";
-import CustomInput from "../../../components/ui/CustomInput";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import { useForm, FormProvider } from "react-hook-form";
+// api
 import { hotelApi } from "../../../api/hotelApi";
-import useFormSubmit from "../../../hook/useFormSubmit";
+// components
+import CustomInput from "../../../components/ui/CustomInput";
 import LoadingButton from "../../../components/ui/LoadingButton";
-import { useQuery } from "react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatarHotel";
+import { Label } from "../../../components/ui/label";
+import UploadWidget from "../../../components/UploadWidget";
+
+// hooks
+import useFormSubmit from "../../../hook/useFormSubmit";
+// validate
 import { validation } from "../../../validation/hotels/StoreHotelValidation";
+// icon
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 interface HotelStoreProps {
   closeSheet: () => void;
   hotelId: string | null;
   action: string;
+  onSubmitSuccess: () => void;
 }
 
-const HotelStore = ({ hotelId, action, closeSheet }: HotelStoreProps) => {
+const HotelStore = ({ hotelId, action, closeSheet, onSubmitSuccess }: HotelStoreProps) => {
   const methods = useForm();
   const { setValue, handleSubmit: handleFormSubmit } = methods;
+  const queryClient = useQueryClient();
 
   const { handleSubmit, loading } = useFormSubmit(
     action === "update" ? hotelApi.updateHotel : hotelApi.createHotel
@@ -29,18 +41,26 @@ const HotelStore = ({ hotelId, action, closeSheet }: HotelStoreProps) => {
     }
   );
 
+  // State lưu URL ảnh
+  const [url, setUrl] = useState(null);
+  const [error, setError] = useState(null);
+
+  // Khi tải dữ liệu từ API, set URL ảnh cũ vào state
   useEffect(() => {
     if (action === "update" && data) {
       Object.keys(data).forEach((key) => {
         setValue(key, data[key] || "");
       });
+
+      // Gán ảnh cũ (nếu có) vào state `url`
+      if (data.avatar_url) {
+        setUrl(data.avatar_url);
+      }
     }
   }, [data, setValue, action]);
 
   const onSubmitHandler = async (payload: Record<string, any>) => {
     try {
-      console.log("Payload từ form:", payload);
-
       const formattedPayload = {
         ...payload,
         stars: parseInt(payload.stars || "0", 10),
@@ -48,21 +68,37 @@ const HotelStore = ({ hotelId, action, closeSheet }: HotelStoreProps) => {
         rating: parseFloat(payload.rating || "0"),
         latitude: parseFloat(payload.latitude || "0"),
         longitude: parseFloat(payload.longitude || "0"),
+        avatar_url: url, // Thêm URL ảnh vào payload
       };
-
-      console.log("Dữ liệu gửi đi:", formattedPayload);
 
       if (action === "update" && hotelId) {
         await handleSubmit({ hotelId, data: formattedPayload });
+
+        // Cập nhật dữ liệu ngay trong cache
+        queryClient.invalidateQueries(["hotels"]);
       } else {
         await handleSubmit(formattedPayload);
+        queryClient.invalidateQueries(["hotels"]);
       }
+      console.log(formattedPayload);
 
       closeSheet();
+      onSubmitSuccess();
     } catch (error) {
       console.error("Có lỗi xảy ra:", error);
     }
   };
+
+  function handleOnUpload(error: any, result: any, widget: any) {
+    if (error) {
+      console.error("Lỗi khi upload ảnh:", error);
+      setError("Lỗi khi upload ảnh. Vui lòng thử lại!");
+      widget.close({ quiet: true });
+      return;
+    }
+    console.log("Kết quả upload ảnh:", result);
+    setUrl(result?.info?.secure_url); // Lưu URL ảnh vào state
+  }
 
   return (
     <FormProvider {...methods}>
@@ -80,6 +116,45 @@ const HotelStore = ({ hotelId, action, closeSheet }: HotelStoreProps) => {
               />
             </div>
           ))}
+          <div>
+            {/* Input URL ẩn */}
+            <input className="hidden" name="avatar_url" value={url || ""} readOnly />
+
+            {/* UploadWidget */}
+            <UploadWidget onUpload={handleOnUpload}>
+              {({ open }) => (
+                <button
+                  id="upload-image"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    open();
+                  }}
+                  className="hidden"
+                >
+                  Upload an Image
+                </button>
+              )}
+            </UploadWidget>
+
+            {/* Hiển thị lỗi khi upload ảnh thất bại */}
+            {error && <p className="text-red-500">{error}</p>}
+
+            {/* Preview ảnh */}
+            <div className="text-center">
+              <Label htmlFor="upload-image" className="text-right relative">
+                {url && (
+                  <IoCloseCircleOutline
+                    className="absolute top-50 right-0 cursor-pointer"
+                    onClick={() => setUrl(null)} // Xóa URL ảnh
+                  />
+                )}
+                <Avatar className="w-[200px] h-[200px] inline-block cursor-pointer shadow-md">
+                  <AvatarImage src={url || "/placeholder-image.png"} />
+                  <AvatarFallback>Ảnh khách sạn</AvatarFallback>
+                </Avatar>
+              </Label>
+            </div>
+          </div>
         </div>
         <div className="text-right">
           <LoadingButton

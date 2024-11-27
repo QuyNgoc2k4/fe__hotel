@@ -3,7 +3,7 @@
 @tailwind utilities;
 :root{
   --primary-color: #0088FF;
-  --hover-btn-color: #006cf9;
+  --hover-btn-color: #378bf9;
   --secondary-color: rgba(35, 183, 299,1);
   --input: 220, 14%, 96%; /* Ví dụ về màu nền input */
   --primary: 240, 6%, 10%, 1; /* Ví dụ về màu nền primary */
@@ -11,6 +11,10 @@
 }
 body{
   background-color: rgba(240, 241, 247, 1) !important;
+  
+}
+body[data-scroll-locked="1"] {
+  pointer-events: auto !important;
 }
 /* src/styles/global.css */
 .page{
@@ -80,3 +84,13 @@ body{
   z-index: 9999 !important;
   position: fixed !important;
 }
+
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-10px); }
+to {opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+

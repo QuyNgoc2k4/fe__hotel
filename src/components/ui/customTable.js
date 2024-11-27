@@ -37,7 +37,7 @@ const CustomTable = ({
           {columns.map((column, index) => (
             <TableHead key={index}>{column.name}</TableHead>
           ))}
-          <TableHead className="text-center">Actions</TableHead>
+          <TableHead className="text-center">Hành động</TableHead>
         </TableRow>
       </TableHeader>
     );
@@ -60,20 +60,28 @@ const CustomTable = ({
             <TableCell key={colIndex}>{col.render(item)}</TableCell>
           ))}
           {actions.length > 0 && (
-            <TableCell className="flex justify-center">
-              {actions.map((action, actionIndex) => (
-                <Button
-                  key={actionIndex}
-                  variant="outline"
-                  className={`${action.className || ""} p-0  p-[10px]`}
-                  onClick={action.onClick ? (e) => action.onClick(item.id, openSheet):undefined}
-                >
-                  {/* <Link to={action.path(item)} className="block p-[10px]"> */}
-                    {action.icon}
-                  {/* </Link> */}
-                </Button>
-              ))}
-            </TableCell>
+          <TableCell className="flex justify-center">
+          {actions.map((action, actionIndex) => (
+            action.method === "viewImages" ? (
+              <Link
+                key={actionIndex}
+                to={action.path(item)} // Sử dụng path từ action
+                className={`${action.className || ""} p-0 p-[10px] flex items-center justify-center border border-solid border-gray-300 rounded`}
+              >
+                {action.icon}
+              </Link>
+            ) : (
+              <Button
+                key={actionIndex}
+                variant="outline"
+                className={`${action.className || ""} p-0 p-[10px]`}
+                onClick={action.onClick ? (e) => action.onClick(item.id, openSheet) : undefined}
+              >
+                {action.icon}
+              </Button>
+            )
+          ))}
+        </TableCell>
           )}
         </TableRow>
       ))

@@ -28,13 +28,17 @@ const Login = () => {
     }
   }, [navigate]);
   const onFinish = async (values) => {
+   
+    console.log( values);
+
     setLoading(true);
     try {
       const response = await authApi.login({
         email: values.email,
         password: values.password,
-        rememberMe, // Gửi trạng thái checkbox nếu API hỗ trợ
+        // rememberMe, // Gửi trạng thái checkbox nếu API hỗ trợ
       });
+      
 
       if (response.data.status === 'success') {
         message.success(response.data.message);

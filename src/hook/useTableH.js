@@ -5,46 +5,60 @@ import { useNavigate } from "react-router-dom";
 const useTableH = ({ apiMethod }) => {
   const navigate = useNavigate();
 
-  const [page, setPage] = useState(1); // Quản lý trang hiện tại
-  const [limit] = useState(10); // Giới hạn số mục trên mỗi trang (cố định)
+  const [page, setPage] = useState(1); // Trang hiện tại
+  const [limit] = useState(3); // Số mục mỗi trang
+  const [filters, setFilters] = useState({}); // Bộ lọc
 
   // Hàm lấy dữ liệu
   const fetchData = async () => {
-    const response = await apiMethod(page, limit);
+    const { search, sort } = filters; // Lấy các bộ lọc hiện tại
+    const response = await apiMethod(page, limit, { search, sort }); // Gửi yêu cầu với các bộ lọc
     return response;
   };
 
-  // Sử dụng react-query để quản lý trạng thái dữ liệu
-  const { data, error, isLoading } = useQuery(
-    ["hotels", page, limit],
+  const { data, error, isLoading, refetch } = useQuery(
+    ["hotels", page, limit, filters],
     fetchData,
     {
-      keepPreviousData: true, // Giữ dữ liệu cũ khi đang tải dữ liệu mới
+      keepPreviousData: true,
     }
   );
-
-  // Cập nhật URL mỗi khi trang thay đổi
+  const handleQueryString = (newFilters) => {    
+    setFilters(newFilters);
+    setPage(1);
+  };
+  // Cập nhật URL khi thay đổi bộ lọc hoặc trang
   useEffect(() => {
-    navigate(`?page=${page}&limit=${limit}`, { replace: true });
-  }, [page, limit, navigate]);
-
-  // Đặt lại trạng thái isChecked khi dữ liệu hoặc trang thay đổi
-  useEffect(() => {
-    if (data?.hotels) {
-      data.hotels.forEach((hotel) => {
-        hotel.isChecked = false; // Tất cả mục được bỏ chọn
-      });
-    }
-  }, [page, data]);
+    const queryParamsObj = {
+      page: page.toString(),
+      limit: limit.toString(),
+      ...filters,
+    };
+  
+    // Xóa các tham số không có giá trị hoặc giá trị trống
+    Object.keys(queryParamsObj).forEach((key) => {
+      if (!queryParamsObj[key]) {
+        delete queryParamsObj[key];
+      }
+    });
+  
+    const queryParams = new URLSearchParams(queryParamsObj).toString();
+  
+    navigate(queryParams ? `?${queryParams}` : '', { replace: true });
+  }, [page, limit, filters, navigate]);
 
   return {
-    data: data?.hotels || [], // Danh sách khách sạn
-    total: data?.total || 0, // Tổng số khách sạn
-    totalPages: data?.totalPages || 1, // Tổng số trang
-    error, // Lỗi nếu có
-    isLoading, // Trạng thái đang tải
-    page, // Trang hiện tại
-    handlePageChange: setPage, // Hàm thay đổi trang
+    data: data?.hotels || [],
+    total: data?.total || 0,
+    totalPages: data?.totalPages || 1,
+    error,
+    isLoading,
+    page,
+    filters,
+    handlePageChange: setPage,
+    handleFiltersChange: setFilters,
+    refetch,
+    handleQueryString
   };
 };
 
