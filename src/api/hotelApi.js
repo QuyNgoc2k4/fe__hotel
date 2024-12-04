@@ -88,6 +88,8 @@ const hotelApi = {
 
   deleteHotel: async (hotelId) => {
     try {
+      console.log(hotelId);
+      
       await apiClient.delete(`${ENDPOINTS.HOTELS}/${hotelId}`);
       showSuccessMessage("Xóa khách sạn thành công!");
     } catch (error) {

@@ -28,9 +28,7 @@ const Login = () => {
     }
   }, [navigate]);
   const onFinish = async (values) => {
-   
-    console.log( values);
-
+  
     setLoading(true);
     try {
       const response = await authApi.login({

@@ -36,8 +36,6 @@ const RoomIndex = () => {
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [currentRoomId, setCurrentRoomId] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchFilters, setSearchFilters] = useState({});
 
   const {
     data,
@@ -45,8 +43,10 @@ const RoomIndex = () => {
     error,
     isLoading,
     page,
+    filters,
     refetch,
     handlePageChange,
+    handleQueryString,
   } = useTableR({ apiMethod: roomApi.getRooms, hotelId: selectedHotel });
 
   const {
@@ -57,6 +57,7 @@ const RoomIndex = () => {
     isAnyChecked,
   } = useCheckBoxState(data || []);
 
+  const somethingChecked = isAnyChecked();
   const { isSheetOpen, openSheet, closeSheet } = useSheet();
 
   const fetchHotels = async () => {
@@ -94,30 +95,6 @@ const RoomIndex = () => {
     }
   };
 
-  // Handle search and filter locally
-  useEffect(() => {
-    if (data) {
-      const filtered = data.filter((room) => {
-        const { room_type_id, is_smoking, status, search } = searchFilters;
-  
-        return (
-          (!room_type_id || room.room_type_id === room_type_id) &&
-          (!is_smoking || room.is_smoking.toString() === is_smoking) &&
-          (!status || room.status.toString() === status) &&
-          (!search ||
-            room.room_number.toLowerCase().includes(search.toLowerCase()) ||
-            room.description.toLowerCase().includes(search.toLowerCase()))
-        );
-      });
-  
-      // Update only if filtered data is different
-      if (JSON.stringify(filtered) !== JSON.stringify(filteredData)) {
-        setFilteredData(filtered);
-      }
-    }
-  }, [data, searchFilters]);
-  
-
   return (
     <>
       <PageHeading breadcrumb={{ title: "Danh sách phòng" }} />
@@ -148,11 +125,11 @@ const RoomIndex = () => {
             </div>
           </CardHeader>
           <CardContent className="p-[15px]">
-            <Filter
-              isAnyChecked={isAnyChecked}
+          <Filter
+              isAnyChecked={somethingChecked}
               checkedState={checkedState}
               openSheet={openSheet}
-              handleQueryString={setSearchFilters}
+              handleQueryString={handleQueryString}
             />
             {isLoading && (
               <p className="flex text-center items-center justify-center">
@@ -164,9 +141,9 @@ const RoomIndex = () => {
                 Lỗi khi tải dữ liệu: {error.message}
               </p>
             )}
-            {filteredData.length > 0 ? (
+            {data.length > 0 ? (
               <CustomTable
-                data={filteredData}
+                data={data}
                 columns={tableColumn}
                 actions={buttonAction.map((action) => ({
                   ...action,
@@ -230,4 +207,3 @@ const RoomIndex = () => {
 };
 
 export default RoomIndex;
-

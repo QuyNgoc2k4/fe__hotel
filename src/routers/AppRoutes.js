@@ -20,7 +20,9 @@ import HotelImage from "../pages/hotels/hotel/Album";
 
 // pages/room
 import RoomIndex from "../pages/rooms/room/View";
-// import RoomlImage from "../pages/rooms/room/Album";
+import RoomType from "../pages/rooms/roomTypes/View";
+import RoomImage from "../pages/rooms/room/Album";
+
 
 // pages/account
 import Profile from "../pages/acount/profile";
@@ -60,7 +62,8 @@ const AppRoutes = () => {
 
         {/* Room Management */}
         <Route path="room/index" element={<RoomIndex />} />
-        {/* <Route path="room-images/:roomId" element={<RoomImage />} /> */}
+        <Route path="room/room-types" element={<RoomType />} />
+        <Route path="room-images/:roomId" element={<RoomImage />} />
 
         {/* Account */}
         <Route path="profile" element={<Profile />} />

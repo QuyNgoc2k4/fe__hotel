@@ -25,7 +25,7 @@ const useTable = ({ role }) => {
       : await userApi.getUsers(page, limit, role ? `&role=${role}` : "");
   };
 
-  const { data, error, isLoading } = useQuery([role, page, limit, filters], fetchData, {
+  const { data, error, isLoading, refetch } = useQuery([role, page, limit, filters], fetchData, {
     keepPreviousData: true,
     select: (response) => response || {},
   });
@@ -59,6 +59,7 @@ const useTable = ({ role }) => {
     isLoading,
     handleQueryString,
     handlePageChange,
+    refetch,
     page,
   };
 };

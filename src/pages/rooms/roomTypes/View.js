@@ -1,27 +1,33 @@
 import React, { useState } from "react";
-// api
-import { hotelApi } from "../../../api/hotelApi";
-// settings
-import { tableColumn, buttonAction, breadcrumb } from "../../../setting/hotel";
-// components
+// API
+import { roomTypeApi } from "../../../api/roomTypeApi";
+// Settings
+import { tableColumn, buttonAction, breadcrumb } from "../../../setting/roomType";
+// Components
 import PageHeading from "../../../components/heading";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
-import Filter from "../../../components/ui/filterUseHotel";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import Filter from "../../../components/ui/filterUseRoomType";
 import { LoadingSpinner } from "../../../components/ui/loading";
 import CustomTable from "../../../components/ui/customTable";
 import Paginate from "../../../components/Pagination";
 import CustomSheet from "../../../components/ui/CustomSheet";
 import CustomDialog from "../../../components/ui/CustomDialog";
-
-// hooks
-import useTableH from "../../../hook/useTableH";
+// Hooks
+import useTableRT from "../../../hook/useTableRT";
 import useCheckBoxState from "../../../hook/useCheckBoxState";
 import useSheet from "../../../hook/useSheet";
-import HotelStore from "./Store";
+import RoomTypeStore from "./Store";
 
-const HotelIndex = () => {
+const RoomTypes = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [currentHotelId, setCurrentHotelId] = useState(null);
+  const [currentRoomTypeId, setCurrentRoomTypeId] = useState(null);
 
   const {
     data,
@@ -33,7 +39,7 @@ const HotelIndex = () => {
     refetch,
     handlePageChange,
     handleQueryString,
-  } = useTableH({ apiMethod: hotelApi.getHotels });
+  } = useTableRT({ apiMethod: roomTypeApi.getRoomTypes });
 
   const {
     checkedState,
@@ -46,29 +52,29 @@ const HotelIndex = () => {
   const somethingChecked = isAnyChecked();
   const { isSheetOpen, openSheet, closeSheet } = useSheet();
 
-  const openDialog = (hotelId) => {
-    setCurrentHotelId(hotelId);
+  const openDialog = (roomTypeId) => {
+    setCurrentRoomTypeId(roomTypeId);
     setDialogOpen(true);
   };
 
   const handleDelete = async () => {
-    if (currentHotelId) {
+    if (currentRoomTypeId) {
       try {
-        await hotelApi.deleteHotel(currentHotelId);
-        setDialogOpen(false); // Close dialog after deletion
+        await roomTypeApi.deleteRoomType(currentRoomTypeId);
+        setDialogOpen(false); // Close the dialog
 
         // Fetch updated data for the current page
-        const updatedData = await hotelApi.getHotels(page, 3, filters);
+        const updatedData = await roomTypeApi.getRoomTypes(page, 3, filters);
 
-        if (updatedData.hotels.length === 0 && page > 1) {
-          // If the current page becomes empty, navigate to the previous page
+        if (updatedData.roomTypes.length === 0) {
+          // If current page is empty, navigate back to the first page
           handlePageChange(1);
         } else {
-          // Otherwise, refetch the current page
+          // Otherwise, refetch data for the current page
           refetch();
         }
       } catch (error) {
-        console.error("Error deleting hotel:", error);
+        console.error("Error deleting room type:", error);
       }
     }
   };
@@ -81,7 +87,7 @@ const HotelIndex = () => {
           <CardHeader className="border-b border-solid border-[#f3f3f3] p-[15px]">
             <CardTitle className="uppercase">{breadcrumb.index.title}</CardTitle>
             <CardDescription className="text-xs">
-              Hiển thị danh sách khách sạn, sử dụng các chức năng bên dưới để quản lý.
+              Hiển thị danh sách loại phòng, sử dụng các chức năng bên dưới để quản lý.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-[15px]">
@@ -98,7 +104,7 @@ const HotelIndex = () => {
             )}
             {error && (
               <p className="text-red-500">
-                Lỗi khi lấy danh sách khách sạn: {error.message}
+                Error fetching room types: {error.message}
               </p>
             )}
             <CustomTable
@@ -114,7 +120,7 @@ const HotelIndex = () => {
                       )
                   : undefined,
               }))}
-              caption="Danh sách khách sạn"
+              caption="Danh sách loại phòng"
               checkedState={checkedState}
               checkedAllState={checkedAllState}
               handleCheckedChange={handleCheckedChange}
@@ -136,21 +142,21 @@ const HotelIndex = () => {
               ? breadcrumb.update.title
               : breadcrumb.create.title
           }
-          description="Nhập đầy đủ các thông tin dưới đây. Các mục có dấu (*) là bắt buộc"
+          description="Điền vào đầy đủ thông tin vào các trường."
           isSheetOpen={isSheetOpen.open}
           closeSheet={closeSheet}
-          className="w-[1000px] sm:w-[1000px]"
+          className="w-[400px] sm:w-[400px]"
         >
-          <HotelStore
+          <RoomTypeStore
             closeSheet={closeSheet}
-            hotelId={isSheetOpen.id}
+            roomTypeId={isSheetOpen.id}
             action={isSheetOpen.action}
             onSubmitSuccess={refetch}
           />
         </CustomSheet>
         <CustomDialog
-          title="Xác nhận xóa"
-          description="Bạn có chắc chắn muốn xóa mục này? Hành động này không thể hoàn tác."
+          title="Xác nhận trước khi xóa "
+          description="Bạn hãy chắc chắn trước khi xóa ? Thao tác này không được hoàn lại."
           isOpen={isDialogOpen}
           onClose={() => setDialogOpen(false)}
           onConfirm={handleDelete}
@@ -162,4 +168,5 @@ const HotelIndex = () => {
   );
 };
 
-export default HotelIndex;
+export default RoomTypes;
+

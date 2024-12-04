@@ -1,6 +1,3 @@
-
-
-
 export const sidebarItem = [
     {
         label: 'MAIN',
@@ -44,7 +41,7 @@ export const sidebarItem = [
                 label: 'Rom management',
                 links: [
                     {title: ' Quản lý phòng', to: '/room/index'},
-                    {title: ' Quản lý loại phòng', to: '/management/user/account'}
+                    {title: ' Quản lý loại phòng', to: 'room/room-types'}
                 ]
             }
         ]

@@ -3,10 +3,14 @@ export const sort = [
     { value: 'desc', name: 'DESC' },
     { value: 'asc', name: 'ASC' },
 ];
-
-export const startDates = [
-    'Tất cả các ngày',
-    '2024-01-01',
-    '2024-02-01',
-    '2024-11-11',
+export const is_smoking = [
+    { value: 'true', name: 'Cho phép' },
+    { value: 'flase', name: 'Không cho phép' },
 ];
+export const status = [
+    { value: 'true', name: 'Đang hoạt động' },
+    { value: 'flase', name: 'Không hoạt động' },
+];
+
+
+

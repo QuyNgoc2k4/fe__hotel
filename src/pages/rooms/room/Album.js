@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { message } from "antd";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { hotelApi } from "../../../api/hotelApi";
-import { breadcrumb } from "../../../setting/hotel";
+import { roomApi } from "../../../api/roomApi";
+import { breadcrumb } from "../../../setting/room";
 import PageHeading from "../../../components/heading";
 import { LoadingSpinner } from "../../../components/ui/loading";
 import Paginate from "../../../components/Pagination";
@@ -12,8 +12,8 @@ import ImageGallery from "../../../components/ImageGallery";
 import ImageDeleteDialog from "../../../components/ImageDeleteDialog";
 import ImageUrlDialog from "../../../components/ImageUrlDialog";
 
-const HotelImage = () => {
-  const { hotelId } = useParams();
+const RoomImage = () => {
+  const { roomId } = useParams();
   const [page, setPage] = useState(1);
   const [selectedImageId, setSelectedImageId] = useState(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -27,18 +27,18 @@ const HotelImage = () => {
 
   // Fetch images
   const { data, isLoading, error } = useQuery(
-    ["hotelImages", hotelId, page],
-    () => hotelApi.getHotelImages(hotelId, page, limit),
-    { enabled: !!hotelId, keepPreviousData: true }
+    ["roomImages", roomId, page],
+    () => roomApi.getRoomImages(roomId, page, limit),
+    { enabled: !!roomId, keepPreviousData: true }
   );
 
   const totalPages = data?.data?.totalPages || 0;
 
   // Delete mutation
-  const deleteImageMutation = useMutation(hotelApi.deleteHotelImage, {
+  const deleteImageMutation = useMutation(roomApi.deleteRoomImage, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["hotelImages", hotelId, page]);
-      queryClient.fetchQuery(["hotelImages", hotelId, page]).then((res) => {
+      queryClient.invalidateQueries(["roomImages", roomId, page]);
+      queryClient.fetchQuery(["roomImages", roomId, page]).then((res) => {
         const remainingImages = res?.data?.images || [];
         const totalPages = res?.data?.totalPages || 0;
 
@@ -62,18 +62,18 @@ const HotelImage = () => {
     try {
       if (!uploadedUrls.length) return;
 
-      await hotelApi.uploadHotelImages({
-        hotel_id: hotelId,
+      await roomApi.uploadRoomImages({
+        room_id: roomId,
         image_urls: uploadedUrls,
       });
 
-      queryClient.invalidateQueries(["hotelImages", hotelId, page]);
+      queryClient.invalidateQueries(["roomImages", roomId, page]);
       setUploadedUrls([]);
       message.success("Ảnh đã được lưu!");
     } catch (err) {
       message.error("Lỗi khi lưu ảnh!");
     }
-  }, [uploadedUrls, hotelId, queryClient, page]);
+  }, [uploadedUrls, roomId, queryClient, page]);
 
   const handlePageChange = (newPage) => setPage(newPage);
 
@@ -85,8 +85,8 @@ const HotelImage = () => {
     }
   };
 
-  if (!hotelId) {
-    return <p className="text-center text-red-500">ID khách sạn không hợp lệ!</p>;
+  if (!roomId) {
+    return <p className="text-center text-red-500">ID phòng không hợp lệ!</p>;
   }
 
   return (
@@ -97,7 +97,7 @@ const HotelImage = () => {
         <div className="bg-white rounded-[5px] mt-[15px] p-[15px]">
           <p className="uppercase text-2xl font-semibold">{breadcrumb.images.title}</p>
           <p className="text-xs">
-            Hiển thị danh sách hình ảnh khách sạn, sử dụng các chức năng bên dưới để quản lý.
+            Hiển thị danh sách hình ảnh phòng, sử dụng các chức năng bên dưới để quản lý.
           </p>
           <ImageUploader
             uploadedUrls={uploadedUrls}
@@ -146,4 +146,4 @@ const HotelImage = () => {
   );
 };
 
-export default HotelImage;
+export default RoomImage;

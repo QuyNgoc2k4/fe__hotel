@@ -1,64 +1,102 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-:root{
-  --primary-color: #0088FF;
+
+/* Root Variables */
+:root {
+  --primary-color: #0088ff;
   --hover-btn-color: #378bf9;
-  --secondary-color: rgba(35, 183, 299,1);
-  --input: 220, 14%, 96%; /* Ví dụ về màu nền input */
-  --primary: 240, 6%, 10%, 1; /* Ví dụ về màu nền primary */
-  /* Thêm các biến khác nếu cần */
+  --secondary-color: rgba(35, 183, 299, 1);
+  --input: 220, 14%, 96%;
+  --primary: 240, 6%, 10%, 1;
 }
-body{
+
+body {
   background-color: rgba(240, 241, 247, 1) !important;
-  
 }
+
 body[data-scroll-locked="1"] {
   pointer-events: auto !important;
 }
-/* src/styles/global.css */
-.page{
+
+/* General Page Styles */
+.page {
   height: 100vh;
 }
-/* header */
-.app-header{
+
+/* Header */
+.app-header {
   padding-left: 240px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.main-header{
+
+.main-header {
   padding: 0 15px;
 }
-.header-link{
+
+.header-link {
   padding: 1rem 0.8rem;
 }
-.header-link-icon{
+
+.header-link-icon {
   width: 20px;
   height: 20px;
   font-size: 20px;
   color: #536485;
+  transition: color 0.3s ease;
 }
 
-.badge-bell{
-  top: 4px; 
-  right: 2px;
+.header-link:hover .header-link-icon {
+  color: var(--primary-color);
+}
+
+.badge-bell {
+  position: absolute;
+  top: 4px;
+  right: 4px;
   font-size: 10px;
   background-color: var(--primary-color);
-
+  color: #fff;
+  border-radius: 50%;
+  padding: 2px 5px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
 }
-/* Accordion */
 
-.sildebar-accordion .border-b{
-   border: 0 !important;
-}
-
-.main-slidebar .sibe-menu__item{
-  padding: 0.45rem 1.6rem;
-  color: #a3aed1;
-  font-size: 13px;
-}
+/* Sidebar */
 .app-aside {
+  width: 240px;
+  background: #111c43;
+  color: #a3aed1;
+  transition: transform 0.3s ease-in-out;
   position: relative;
   display: flex;
   flex-direction: column;
+}
+
+.app-aside.hidden {
+  transform: translateX(-100%);
+}
+
+.app-aside.visible {
+  transform: translateX(0);
+}
+
+.main-slidebar .sibe-menu__item {
+  padding: 0.45rem 1.6rem;
+  color: #a3aed1;
+  font-size: 13px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.main-slidebar .sibe-menu__item:hover {
+  background-color: var(--hover-btn-color);
+  color: white;
+}
+
+.sildebar-accordion .border-b {
+  border: 0 !important;
 }
 
 .main-slidebar-footer {
@@ -67,30 +105,110 @@ body[data-scroll-locked="1"] {
   width: 100%;
 }
 
+/* Accordion */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
 
+.accordion-content.open {
+  max-height: 500px;
+}
 
-/* main content */
-.main-content{
+/* Main Content */
+.main-content {
   margin-left: 240px;
   margin-top: 3.6rem;
   height: calc(100vh - 50px);
 }
 
-/* card */
-.container{
+/* Card */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Container */
+.container {
+  width: 100%;
   padding: 0 15px;
 }
-.cloudinary-widget {
-  z-index: 9999 !important;
-  position: fixed !important;
+
+/* Avatar */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
+/* Animations */
 @keyframes fadeIn {
-  from {opacity: 0; transform: translateY(-10px); }
-to {opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
 }
 
+/* Utility Classes */
+.transition {
+  transition: all 0.3s ease-in-out;
+}
+
+.scale-hover {
+  transition: transform 0.3s ease;
+}
+
+.scale-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .app-aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 9999;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .app-header {
+    padding-left: 0;
+  }
+}
+/* Khi Sidebar Ẩn */
+.app-header.sidebar-hidden {
+  padding-left: 0;
+}
+
+.main-content.sidebar-hidden {
+  margin-left: 0;
+}
