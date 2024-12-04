@@ -1,126 +1,153 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { useForm, FormProvider } from "react-hook-form";
-// api
-import { hotelApi } from "../../../api/hotelApi";
-// components
 import CustomInput from "../../../components/ui/CustomInput";
 import LoadingButton from "../../../components/ui/LoadingButton";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatarHotel";
 import { Label } from "../../../components/ui/label";
 import UploadWidget from "../../../components/UploadWidget";
-
-// hooks
-import useFormSubmit from "../../../hook/useFormSubmit";
-// validate
-import { validation } from "../../../validation/rooms/StoreRoomValidation";
-// icon
+import Select from "react-select"; // Import react-select
 import { IoCloseCircleOutline } from "react-icons/io5";
+import useFormSubmit from "../../../hook/useFormSubmit";
+import { validation } from "../../../validation/rooms/StoreRoomValidation";
+// API
+import { hotelApi } from "../../../api/hotelApi";
+import { roomApi } from "../../../api/roomApi";
+import { roomTypeApi } from "../../../api/roomTypeApi";
 
-interface RoomStoreProps {
-  closeSheet: () => void;
-  hotelId: string | null;
-  action: string;
-  onSubmitSuccess: () => void;
-}
+const RoomStore = ({ roomId, action, closeSheet, onSubmitSuccess }) => {
+  const [hotels, setHotels] = useState([]);
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [url, setUrl] = useState(null);
+  const [error, setError] = useState(null);
 
-const RoomStore = ({ hotelId, action, closeSheet, onSubmitSuccess }: RoomStoreProps) => {
   const methods = useForm();
   const { setValue, handleSubmit: handleFormSubmit } = methods;
   const queryClient = useQueryClient();
 
   const { handleSubmit, loading } = useFormSubmit(
-    action === "update" ? hotelApi.updateHotel : hotelApi.createHotel
+    action === "update" ? roomApi.updateRoom : roomApi.createRoom
   );
 
-  const { data, isLoading } = useQuery(
-    ["hotel", hotelId],
-    () => hotelApi.getHotelById(hotelId),
-    {
-      enabled: action === "update" && !!hotelId,
-    }
-  );
+  const { data } = useQuery(["room", roomId], () => roomApi.getRoomById(roomId), {
+    enabled: action === "update" && !!roomId,
+  });
 
-  // State lưu URL ảnh
-  const [url, setUrl] = useState(null);
-  const [error, setError] = useState(null);
-
-  // Khi tải dữ liệu từ API, set URL ảnh cũ vào state
   useEffect(() => {
     if (action === "update" && data) {
       Object.keys(data).forEach((key) => {
         setValue(key, data[key] || "");
       });
 
-      // Gán ảnh cũ (nếu có) vào state `url`
       if (data.avatar_url) {
         setUrl(data.avatar_url);
       }
     }
   }, [data, setValue, action]);
 
-  const onSubmitHandler = async (payload: Record<string, any>) => {
+  const onSubmitHandler = async (payload) => {
     try {
       const formattedPayload = {
-        ...payload,
-        stars: parseInt(payload.stars || "0", 10),
-        total_rooms: parseInt(payload.total_rooms || "0", 10),
-        rating: parseFloat(payload.rating || "0"),
-        latitude: parseFloat(payload.latitude || "0"),
-        longitude: parseFloat(payload.longitude || "0"),
-        avatar_url: url, // Thêm URL ảnh vào payload
+        room_number: payload.room_number,
+        avatar_url: url,
+        hotel: {
+          connect: { id: payload.hotel_id },
+        },
+        room_type: {
+          connect: { id: payload.room_type_id },
+        },
+        current_price: parseInt(payload.current_price || "0", 10),
+        floor: parseInt(payload.floor || "0", 10),
+        is_smoking: !!payload.is_smoking,
+        status: !!payload.status,
+        description: payload.description,
       };
 
-      if (action === "update" && hotelId) {
-        await handleSubmit({ hotelId, data: formattedPayload });
-
-        // Cập nhật dữ liệu ngay trong cache
-        queryClient.invalidateQueries(["hotels"]);
-      } else {
-        await handleSubmit(formattedPayload);
-        queryClient.invalidateQueries(["hotels"]);
-      }
-      console.log(formattedPayload);
-
+      await handleSubmit(formattedPayload);
+      queryClient.invalidateQueries(["rooms"]);
       closeSheet();
       onSubmitSuccess();
     } catch (error) {
-      console.error("Có lỗi xảy ra:", error);
+      console.error("Error creating/updating room:", error);
     }
   };
 
-  function handleOnUpload(error: any, result: any, widget: any) {
+  const handleOnUpload = (error, result, widget) => {
     if (error) {
-      console.error("Lỗi khi upload ảnh:", error);
+      console.error("Error uploading image:", error);
       setError("Lỗi khi upload ảnh. Vui lòng thử lại!");
       widget.close({ quiet: true });
       return;
     }
-    console.log("Kết quả upload ảnh:", result);
-    setUrl(result?.info?.secure_url); // Lưu URL ảnh vào state
-  }
+    setUrl(result?.info?.secure_url);
+  };
+
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const response = await hotelApi.getHotels(1, 100);
+        setHotels(
+          Array.isArray(response.hotels)
+            ? response.hotels.map((hotel) => ({ value: hotel.id, label: hotel.name }))
+            : []
+        );
+      } catch (error) {
+        console.error("Failed to fetch hotels:", error);
+      }
+    };
+
+    const fetchRoomTypes = async () => {
+      try {
+        const response = await roomTypeApi.getRoomTypes();
+        setRoomTypes(
+          Array.isArray(response.roomTypes)
+            ? response.roomTypes.map((type) => ({ value: type.id, label: type.name }))
+            : []
+        );
+      } catch (error) {
+        console.error("Failed to fetch room types:", error);
+      }
+    };
+
+    fetchHotels();
+    fetchRoomTypes();
+  }, []);
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleFormSubmit(onSubmitHandler)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-          {validation(action).map((item, index) => (
-            <div key={index}>
-              <CustomInput
-                label={item.label}
-                id={item.id}
-                name={item.name}
-                type={item.type}
-                register={methods.register}
-                rules={item.rules}
-              />
-            </div>
-          ))}
-          <div>
-            {/* Input URL ẩn */}
-            <input className="hidden" name="avatar_url" value={url || ""} readOnly />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            {validation(action).baseValidationData.map((item, index) => (
+              <div key={index}>
+                <CustomInput
+                  label={item.label}
+                  id={item.id}
+                  name={item.name}
+                  type={item.type}
+                  register={methods.register}
+                  rules={item.rules}
+                />
+              </div>
+            ))}
 
-            {/* UploadWidget */}
+            {validation(action).checkboxValidationData.map((item, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                <input
+                  id={item.id}
+                  type="checkbox"
+                  {...methods.register(item.name, item.rules)}
+                  defaultChecked={item.defaultValue}
+                />
+                <label htmlFor={item.id} className="text-sm">
+                  {item.label}
+                </label>
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <input className="hidden" name="avatar_url" value={url || ""} readOnly />
             <UploadWidget onUpload={handleOnUpload}>
               {({ open }) => (
                 <button
@@ -136,23 +163,44 @@ const RoomStore = ({ hotelId, action, closeSheet, onSubmitSuccess }: RoomStorePr
               )}
             </UploadWidget>
 
-            {/* Hiển thị lỗi khi upload ảnh thất bại */}
             {error && <p className="text-red-500">{error}</p>}
 
-            {/* Preview ảnh */}
             <div className="text-center">
               <Label htmlFor="upload-image" className="text-right relative">
                 {url && (
                   <IoCloseCircleOutline
                     className="absolute top-50 right-0 cursor-pointer"
-                    onClick={() => setUrl(null)} // Xóa URL ảnh
+                    onClick={() => setUrl(null)}
                   />
                 )}
                 <Avatar className="w-[200px] h-[200px] inline-block cursor-pointer shadow-md">
                   <AvatarImage src={url || "/placeholder-image.png"} />
-                  <AvatarFallback>Ảnh khách sạn</AvatarFallback>
+                  <AvatarFallback>Ảnh phòng</AvatarFallback>
                 </Avatar>
               </Label>
+            </div>
+          </div>
+          <div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Chọn khách sạn</label>
+              <Select
+                options={hotels}
+                onChange={(selectedOption) =>
+                  setValue("hotel_id", selectedOption ? selectedOption.value : null)
+                }
+                placeholder="Chọn tên khách sạn"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Chọn loại phòng</label>
+              <Select
+                options={roomTypes}
+                onChange={(selectedOption) =>
+                  setValue("room_type_id", selectedOption ? selectedOption.value : null)
+                }
+                placeholder="Chọn loại phòng"
+              />
             </div>
           </div>
         </div>

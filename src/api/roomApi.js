@@ -61,8 +61,12 @@ const roomApi = {
   },
 
   createRoom: async (data) => {
+    
+    
     try {
+
       const parsedData = parseRoomData(data);
+      console.log(parsedData);
       const response = await apiClient.post(ENDPOINTS.ROOMS, parsedData, {
         headers: { "Content-Type": "application/json" },
       });
