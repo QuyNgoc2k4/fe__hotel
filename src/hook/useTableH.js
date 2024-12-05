@@ -6,7 +6,7 @@ const useTableH = ({ apiMethod }) => {
   const navigate = useNavigate();
 
   const [page, setPage] = useState(1); // Trang hiện tại
-  const [limit] = useState(3); // Số mục mỗi trang
+  const [limit] = useState(10); // Số mục mỗi trang
   const [filters, setFilters] = useState({}); // Bộ lọc
 
   // Hàm lấy dữ liệu

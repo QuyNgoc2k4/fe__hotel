@@ -36,18 +36,22 @@ const RoomIndex = () => {
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [currentRoomId, setCurrentRoomId] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
   const [searchFilters, setSearchFilters] = useState({});
 
-  const {
-    data,
-    totalPages,
-    error,
-    isLoading,
-    page,
-    refetch,
-    handlePageChange,
+  const { 
+    allData, 
+    filteredData, 
+    paginatedData, 
+    totalPages, 
+    error, 
+    isLoading, 
+    page, 
+    setFilteredData, 
+    handlePageChange, 
+    setPage,
+    refetch 
   } = useTableR({ apiMethod: roomApi.getRooms, hotelId: selectedHotel });
+  
 
   const {
     checkedState,
@@ -55,7 +59,7 @@ const RoomIndex = () => {
     handleCheckedChange,
     handleCheckAllChange,
     isAnyChecked,
-  } = useCheckBoxState(data || []);
+  } = useCheckBoxState(allData || []);
 
   const { isSheetOpen, openSheet, closeSheet } = useSheet();
 
@@ -86,20 +90,25 @@ const RoomIndex = () => {
     if (currentRoomId) {
       try {
         await roomApi.deleteRoom(currentRoomId);
-        setDialogOpen(false); // Close dialog after deletion
-        refetch(); // Refetch data after deletion
+
+        if (filteredData.length === 1 && page > 1) {
+          handlePageChange(page - 1);
+        } else {
+          refetch();
+        }
+
+        setDialogOpen(false);
       } catch (error) {
         console.error("Error deleting room:", error);
       }
     }
   };
 
-  // Handle search and filter locally
   useEffect(() => {
-    if (data) {
-      const filtered = data.filter((room) => {
+    if (allData.length > 0) {
+      const filtered = allData.filter((room) => {
         const { room_type_id, is_smoking, status, search } = searchFilters;
-  
+
         return (
           (!room_type_id || room.room_type_id === room_type_id) &&
           (!is_smoking || room.is_smoking.toString() === is_smoking) &&
@@ -109,14 +118,11 @@ const RoomIndex = () => {
             room.description.toLowerCase().includes(search.toLowerCase()))
         );
       });
-  
-      // Update only if filtered data is different
-      if (JSON.stringify(filtered) !== JSON.stringify(filteredData)) {
-        setFilteredData(filtered);
-      }
+
+      setFilteredData(filtered); // Cập nhật dữ liệu đã lọc
+      setPage(1); // Đưa về trang đầu tiên khi áp dụng bộ lọc
     }
-  }, [data, searchFilters]);
-  
+  }, [allData, searchFilters, setFilteredData]);
 
   return (
     <>
@@ -164,18 +170,18 @@ const RoomIndex = () => {
                 Lỗi khi tải dữ liệu: {error.message}
               </p>
             )}
-            {filteredData.length > 0 ? (
+            {paginatedData.length > 0 ? (
               <CustomTable
-                data={filteredData}
+                data={paginatedData} // Dữ liệu phân trang sau khi lọc
                 columns={tableColumn}
                 actions={buttonAction.map((action) => ({
                   ...action,
                   onClick: action.onClick
                     ? (id) =>
-                        action.onClick(
-                          id,
-                          action.method === "update" ? openSheet : openDialog
-                        )
+                      action.onClick(
+                        id,
+                        action.method === "update" ? openSheet : openDialog
+                      )
                     : undefined,
                 }))}
                 caption="Danh sách phòng"
@@ -188,6 +194,7 @@ const RoomIndex = () => {
             ) : (
               <p className="text-gray-500">Không có phòng nào.</p>
             )}
+
           </CardContent>
           <CardFooter className="flex justify-center">
             <Paginate
@@ -230,4 +237,3 @@ const RoomIndex = () => {
 };
 
 export default RoomIndex;
-

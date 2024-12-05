@@ -54,41 +54,31 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
     actionSwitch(action, SelectedValue, checkedState);
   };
 
+  // Reset all filters
+  const resetFilters = () => {
+    setFilters({
+      room_type_id: "",
+      is_smoking: "",
+      status: "",
+    });
+    setSearch("");
+    handleQueryString({}); // Cập nhật bộ lọc rỗng
+  };
+
   return (
     <div className="flex justify-between mb-[15px] items-center">
       <div className="flex items-center">
-        {isAnyChecked && (
-          <Select onValueChange={(value) => handleStatus(value)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="With selected" />
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectItem
-                className="cursor-pointer hover:bg-[#a3aed17c]"
-                value="deleteAll"
-              >
-                <div className="flex items-center">
-                  <MdDeleteForever />
-                  Delete All
-                </div>
-              </SelectItem>
-              <SelectItem
-                className="cursor-pointer hover:bg-[#a3aed17c]"
-                value="publish|1"
-              >
-                Publish 1
-              </SelectItem>
-              <SelectItem
-                className="cursor-pointer hover:bg-[#a3aed17c]"
-                value="publish|2"
-              >
-                Publish 2
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        )}
+      <Button
+          className="mr-2 bg-gray-400 text-white hover:bg-gray-500"
+          onClick={resetFilters}
+        >
+          Hiện tất cả
+        </Button>
         <div className="mr-[10px]">
-          <Select onValueChange={(value) => handleFilter(value, "room_type_id")}>
+          <Select
+            value={filters.room_type_id} // Điều khiển bằng state
+            onValueChange={(value) => handleFilter(value, "room_type_id")}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select Room Type" />
             </SelectTrigger>
@@ -110,7 +100,10 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
           </Select>
         </div>
         <div className="mr-[10px]">
-          <Select onValueChange={(value) => handleFilter(value, "is_smoking")}>
+          <Select
+            value={filters.is_smoking} // Điều khiển bằng state
+            onValueChange={(value) => handleFilter(value, "is_smoking")}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sử dụng thuốc lá" />
             </SelectTrigger>
@@ -128,7 +121,10 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
           </Select>
         </div>
         <div className="mr-[10px]">
-          <Select onValueChange={(value) => handleFilter(value, "status")}>
+          <Select
+            value={filters.status} // Điều khiển bằng state
+            onValueChange={(value) => handleFilter(value, "status")}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Trạng thái phòng" />
             </SelectTrigger>
@@ -148,18 +144,22 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
         <div className="mr-[10px]">
           <Input
             type="text"
+            value={search} // Điều khiển bằng state
             placeholder="Search..."
             onChange={(e) => debounceInputSearch(e.target.value)}
           />
         </div>
       </div>
-      <Button
-        className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]"
-        onClick={() => openSheet({ open: true, action: "", id: "34535" })}
-      >
-        <FaPlus />
-        Thêm phòng mới
-      </Button>
+      <div className="flex items-center">
+       
+        <Button
+          className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]"
+          onClick={() => openSheet({ open: true, action: "", id: "34535" })}
+        >
+          <FaPlus />
+          Thêm phòng mới
+        </Button>
+      </div>
     </div>
   );
 };

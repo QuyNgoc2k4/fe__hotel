@@ -17,7 +17,11 @@ import { roomTypeApi } from "../../../api/roomTypeApi";
 
 const RoomStore = ({ roomId, action, closeSheet, onSubmitSuccess }) => {
   const [hotels, setHotels] = useState([]);
+  const [selectedHotel, setSelectedHotel] = useState(null); // State for the selected hotel
+
   const [roomTypes, setRoomTypes] = useState([]);
+  const [selectedRoomType, setSelectedRoomType] = useState(null); // State for the selected hotel
+
   const [url, setUrl] = useState(null);
   const [error, setError] = useState(null);
 
@@ -42,33 +46,49 @@ const RoomStore = ({ roomId, action, closeSheet, onSubmitSuccess }) => {
       if (data.avatar_url) {
         setUrl(data.avatar_url);
       }
+
+      // Set default selected hotel
+      if (data.hotel_id && hotels.length > 0) {
+        const hotel = hotels.find((hotel) => hotel.value === data.hotel_id);
+        setSelectedHotel(hotel || null);
+      }
+      // Set default selected room Type
+      if (data.room_type_id && roomTypes.length > 0) {
+        const roomType = roomTypes.find((roomType) => roomType.value === data.room_type_id);
+        setSelectedRoomType(roomType || null);
+      }
     }
-  }, [data, setValue, action]);
+  }, [data, setValue, action, hotels, roomTypes]);
 
   const onSubmitHandler = async (payload) => {
     try {
+      const { room_number, hotel_id, room_type_id, current_price, floor, is_smoking, status, description } = payload;
+
       const formattedPayload = {
-        room_number: payload.room_number,
-        avatar_url: url,
-        hotel: {
-          connect: { id: payload.hotel_id },
-        },
-        room_type: {
-          connect: { id: payload.room_type_id },
-        },
-        current_price: parseInt(payload.current_price || "0", 10),
-        floor: parseInt(payload.floor || "0", 10),
-        is_smoking: !!payload.is_smoking,
-        status: !!payload.status,
-        description: payload.description,
+        room_number,
+        avatar_url: url || "https://example.com/placeholder-image.jpg",
+        hotel_id,
+        room_type_id,
+        current_price: parseInt(current_price, 10),
+        floor: parseInt(floor, 10),
+        is_smoking: payload.is_smoking || false, // Nếu không có giá trị thì gán false
+        status: payload.status || false, // Nếu không có giá trị thì gán false
+        description,
       };
 
-      await handleSubmit(formattedPayload);
-      queryClient.invalidateQueries(["rooms"]);
+      if (action === "update" && roomId) {
+        await roomApi.updateRoom({ roomId, data: formattedPayload });
+        queryClient.invalidateQueries(["rooms"]);
+      } else {
+        await roomApi.createRoom(formattedPayload);
+        queryClient.invalidateQueries(["rooms"]);
+      }
+
       closeSheet();
       onSubmitSuccess();
     } catch (error) {
-      console.error("Error creating/updating room:", error);
+      console.error("Error creating room:", error.response || error);
+      setError("Error creating room. Please check your input data.");
     }
   };
 
@@ -185,10 +205,13 @@ const RoomStore = ({ roomId, action, closeSheet, onSubmitSuccess }) => {
               <label className="block text-sm font-medium text-gray-700">Chọn khách sạn</label>
               <Select
                 options={hotels}
-                onChange={(selectedOption) =>
-                  setValue("hotel_id", selectedOption ? selectedOption.value : null)
-                }
+                value={selectedHotel} // Set the selected value
+                onChange={(selectedOption) => {
+                  setValue("hotel_id", selectedOption ? selectedOption.value : null);
+                  setSelectedHotel(selectedOption); // Cập nhật đúng trạng thái của khách sạn
+                }}
                 placeholder="Chọn tên khách sạn"
+                className="w-[320px]"
               />
             </div>
 
@@ -196,12 +219,16 @@ const RoomStore = ({ roomId, action, closeSheet, onSubmitSuccess }) => {
               <label className="block text-sm font-medium text-gray-700">Chọn loại phòng</label>
               <Select
                 options={roomTypes}
-                onChange={(selectedOption) =>
-                  setValue("room_type_id", selectedOption ? selectedOption.value : null)
-                }
+                value={selectedRoomType} // Set the selected value
+                onChange={(selectedOption) => {
+                  setValue("room_type_id", selectedOption ? selectedOption.value : null);
+                  setSelectedRoomType(selectedOption); // Cập nhật đúng trạng thái của loại phòng
+                }}
                 placeholder="Chọn loại phòng"
+                className="w-[320px]"
               />
             </div>
+
           </div>
         </div>
         <div className="text-right">

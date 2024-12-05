@@ -64,10 +64,10 @@ const roomApi = {
     
     
     try {
+      const { id, created_at, updated_at, ...filteredData } = data;
 
-      const parsedData = parseRoomData(data);
-      console.log(parsedData);
-      const response = await apiClient.post(ENDPOINTS.ROOMS, parsedData, {
+      console.log(filteredData);
+      const response = await apiClient.post(ENDPOINTS.ROOMS, filteredData, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -80,8 +80,10 @@ const roomApi = {
 
   updateRoom: async ({ roomId, data }) => {
     try {
-      const { id, ...parsedData } = parseRoomData(data);
-      const response = await apiClient.patch(`${ENDPOINTS.ROOMS}/${roomId}`, parsedData, {
+      const { id, created_at, updated_at, ...filteredData } = data;
+
+      console.log(filteredData);
+      const response = await apiClient.patch(`${ENDPOINTS.ROOMS}/${roomId}`, filteredData, {
         headers: { "Content-Type": "application/json" },
       });
 

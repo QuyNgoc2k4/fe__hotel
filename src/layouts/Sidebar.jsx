@@ -104,7 +104,7 @@ const Sidebar = ({ isOpen }) => {
           className="menu-category px-6 text-[#a3aed1] hover:text-white text-xs tracking-wider font-semibold opacity-50 cursor-pointer"
         >
           <i className="fa-solid fa-arrow-right-from-bracket"></i>
-          &nbsp;&nbsp;LOGOUT
+          &nbsp;&nbsp;ĐĂNG XUẤT
         </div>
       </div>
     </aside>

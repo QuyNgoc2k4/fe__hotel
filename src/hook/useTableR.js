@@ -1,33 +1,57 @@
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const useTableR = ({ apiMethod, hotelId }) => {
-  const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [page, setPage] = useState(1); // Trạng thái trang hiện tại
+  const [limit] = useState(10); // Số phòng mỗi trang
+  const [allData, setAllData] = useState([]); // Dữ liệu gốc
+  const [filteredData, setFilteredData] = useState([]); // Dữ liệu đã lọc
+  const [paginatedData, setPaginatedData] = useState([]); // Dữ liệu phân trang
 
   const fetchData = async () => {
-    if (!hotelId) return { rooms: [], totalPages: 0, total: 0 };
-    const response = await apiMethod(hotelId, page, limit);
-    return response.data; // Đảm bảo trả về `data` từ API
+    if (!hotelId) return { rooms: [], total: 0 };
+    const response = await apiMethod(hotelId); // Lấy tất cả dữ liệu
+    return response.data; // Trả về toàn bộ dữ liệu từ API
   };
 
   const { data, error, isLoading, refetch } = useQuery(
-    ["rooms", hotelId, page, limit],
+    ["rooms", hotelId],
     fetchData,
     {
-      keepPreviousData: true,
-      enabled: !!hotelId, // Chỉ fetch nếu có hotelId
+      enabled: !!hotelId, // Chỉ fetch dữ liệu nếu có hotelId
+      onSuccess: (fetchedData) => {
+        setAllData(fetchedData.rooms || []); // Lưu dữ liệu gốc
+        setFilteredData(fetchedData.rooms || []); // Ban đầu chưa lọc
+        setPage(1); // Reset trang về đầu tiên khi có dữ liệu mới
+      },
     }
   );
 
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= Math.ceil(filteredData.length / limit)) {
+      setPage(newPage); // Thay đổi trang
+    }
+  };
+
+  // Cập nhật dữ liệu phân trang khi filteredData hoặc page thay đổi
+  useEffect(() => {
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    setPaginatedData(filteredData.slice(start, end));
+  }, [filteredData, page, limit]);
+
   return {
-    data: data?.rooms || [], // Lấy danh sách phòng
-    totalPages: data?.totalPages || 0, // Lấy tổng số trang
-    total: data?.total || 0, // Tổng số phòng
+    allData,
+    filteredData, // Dữ liệu đã lọc
+    paginatedData, // Dữ liệu phân trang
+    totalPages: Math.ceil(filteredData.length / limit),
+    total: filteredData.length,
     error,
     isLoading,
     page,
-    handlePageChange: setPage,
+    setFilteredData, // Hàm để cập nhật dữ liệu đã lọc
+    handlePageChange,
+    setPage, // Đảm bảo setPage được trả về
     refetch,
   };
 };

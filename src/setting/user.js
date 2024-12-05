@@ -3,6 +3,8 @@ import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever, MdLockReset } from "react-icons/md";
 
 import { FaRegImages } from "react-icons/fa";
+import HotelName from "../components/HotelName";
+
 
 export const getTableColumns = (role) => {
   // Cột chung cho tất cả vai trò
@@ -12,7 +14,7 @@ export const getTableColumns = (role) => {
     //   render: (item) => <span>{item.id}</span>,
     // },
     {
-      name: "Avatar",
+      name: "Ảnh đại diện",
       render: (item) =>
         item.avatar_url ? (
           <img src={item.avatar_url} alt="Avatar" className="w-10 h-10 rounded-full" />
@@ -21,7 +23,7 @@ export const getTableColumns = (role) => {
         ),
     },
     {
-      name: "Name",
+      name: "Tên",
       render: (item) => <span>{item.name || "Chưa có tên"}</span>,
     },
     {
@@ -29,11 +31,11 @@ export const getTableColumns = (role) => {
       render: (item) => <span>{item.email}</span>,
     },
     {
-      name: "Phone",
+      name: "Điện thoại",
       render: (item) => <span>{item.phone || "Chưa có số điện thoại"}</span>,
     },
     {
-      name: "Role",
+      name: "Vai trò",
       render: (item) =>
         typeof item.role === "object" ? (
           <span>{item.role.name || "Chưa có vai trò"}</span>
@@ -47,12 +49,12 @@ export const getTableColumns = (role) => {
   if (role === "customer") {
     const customerColumns = [
       {
-        name: "Gender",
+        name: "Giới tính",
         render: (item) =>
           item.Customers?.[0]?.gender ? <span>{item.Customers[0].gender}</span> : <span>Chưa có</span>,
       },
       {
-        name: "Date of Birth",
+        name: "Ngày sinh",
         render: (item) =>
           item.Customers?.[0]?.date_of_birth ? (
             <span>{new Date(item.Customers[0].date_of_birth).toLocaleDateString()}</span>
@@ -61,7 +63,7 @@ export const getTableColumns = (role) => {
           ),
       },
       {
-        name: "Identity Number",
+        name: "Số CCCD",
         render: (item) =>
           item.Customers?.[0]?.identity_number ? (
             <span>{item.Customers[0].identity_number}</span>
@@ -70,17 +72,17 @@ export const getTableColumns = (role) => {
           ),
       },
       {
-        name: "Address",
+        name: "Địa chỉ thường chú",
         render: (item) =>
           item.Customers?.[0]?.address ? <span>{item.Customers[0].address}</span> : <span>Chưa có</span>,
       },
       {
-        name: "Nationality",
+        name: "Quốc tịch",
         render: (item) =>
           item.Customers?.[0]?.nationality ? <span>{item.Customers[0].nationality}</span> : <span>Chưa có</span>,
       },
       {
-        name: "Loyalty Points",
+        name: "Tích điểm",
         render: (item) =>
           item.Customers?.[0]?.loyalty_points !== undefined ? (
             <span>{item.Customers[0].loyalty_points}</span>
@@ -97,22 +99,26 @@ export const getTableColumns = (role) => {
   if (role === "staff") {
     const staffColumns = [
       {
-        name: "Hotel ID",
+        name: "Khách sạn",
         render: (item) =>
-          item.Employees?.[0]?.hotel_id ? <span>{item.Employees[0].hotel_id}</span> : <span>Chưa có</span>,
+          item.Employees?.[0]?.hotel_id ? (
+            <HotelName hotelId={item.Employees[0].hotel_id} />
+          ) : (
+            <span>Chưa có</span>
+          ),
       },
       {
-        name: "Role",
+        name: "Vị trí",
         render: (item) =>
           item.Employees?.[0]?.role ? <span>{item.Employees[0].role}</span> : <span>Chưa có</span>,
       },
       {
-        name: "Salary",
+        name: "Lương",
         render: (item) =>
           item.Employees?.[0]?.salary ? <span>${item.Employees[0].salary}</span> : <span>Chưa có</span>,
       },
       {
-        name: "Start Date",
+        name: "Ngày bắt đầu",
         render: (item) =>
           item.Employees?.[0]?.start_date ? (
             <span>{new Date(item.Employees[0].start_date).toLocaleDateString()}</span>
@@ -121,7 +127,7 @@ export const getTableColumns = (role) => {
           ),
       },
       {
-        name: "End Date",
+        name: "Ngày kết thúc",
         render: (item) =>
           item.Employees?.[0]?.end_date ? (
             <span>{new Date(item.Employees[0].end_date).toLocaleDateString()}</span>
@@ -130,7 +136,7 @@ export const getTableColumns = (role) => {
           ),
       },
       {
-        name: "ID Card Number",
+        name: "Số CCCD",
         render: (item) =>
           item.Employees?.[0]?.id_card_number ? (
             <span>{item.Employees[0].id_card_number}</span>
@@ -139,7 +145,7 @@ export const getTableColumns = (role) => {
           ),
       },
       {
-        name: "Education Level",
+        name: "Học vấn",
         render: (item) =>
           item.Employees?.[0]?.education_level ? (
             <span>{item.Employees[0].education_level}</span>
@@ -148,7 +154,7 @@ export const getTableColumns = (role) => {
           ),
       },
       {
-        name: "Certifications",
+        name: "Chứng chỉ",
         render: (item) =>
           item.Employees?.[0]?.certifications ? (
             <span>{item.Employees[0].certifications}</span>

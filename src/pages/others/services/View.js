@@ -1,39 +1,25 @@
 import React, { useState } from "react";
-// api
-import { hotelApi } from "../../../api/hotelApi";
-// settings
-import { tableColumn, buttonAction, breadcrumb } from "../../../setting/hotel";
-// components
+import { serviceApi } from "../../../api/serviceApi";
+import { tableColumn, buttonAction, breadcrumb } from "../../../setting/service";
 import PageHeading from "../../../components/heading";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../../components/ui/card";
-import Filter from "../../../components/ui/filterUseHotel";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { LoadingSpinner } from "../../../components/ui/loading";
 import CustomTable from "../../../components/ui/customTable";
-import Paginate from "../../../components/Pagination";
 import CustomSheet from "../../../components/ui/CustomSheet";
 import CustomDialog from "../../../components/ui/CustomDialog";
-
-// hooks
-import useTableH from "../../../hook/useTableH";
+import useTableS from "../../../hook/useTableS";
 import useCheckBoxState from "../../../hook/useCheckBoxState";
 import useSheet from "../../../hook/useSheet";
-import HotelStore from "./Store";
+import ServiceStore from "./Store";
+import { Button } from "../../../components/ui/button";
+import { FaPlus } from "react-icons/fa6";
 
-const HotelIndex = () => {
+
+const ServiceIndex = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [currentHotelId, setCurrentHotelId] = useState(null);
+  const [currentServiceId, setCurrentServiceId] = useState(null);
 
-  const {
-    data,
-    totalPages,
-    error,
-    isLoading,
-    page,
-    filters,
-    refetch,
-    handlePageChange,
-    handleQueryString,
-  } = useTableH({ apiMethod: hotelApi.getHotels });
+  const { data, error, isLoading, refetch } = useTableS({ apiMethod: serviceApi.getServices });
 
   const {
     checkedState,
@@ -46,29 +32,19 @@ const HotelIndex = () => {
   const somethingChecked = isAnyChecked();
   const { isSheetOpen, openSheet, closeSheet } = useSheet();
 
-  const openDialog = (hotelId) => {
-    setCurrentHotelId(hotelId);
+  const openDialog = (serviceId) => {
+    setCurrentServiceId(serviceId);
     setDialogOpen(true);
   };
 
   const handleDelete = async () => {
-    if (currentHotelId) {
+    if (currentServiceId) {
       try {
-        await hotelApi.deleteHotel(currentHotelId);
-        setDialogOpen(false); // Close dialog after deletion
-
-        // Fetch updated data for the current page
-        const updatedData = await hotelApi.getHotels(page, 10, filters);
-
-        if (updatedData.hotels.length === 0 && page > 1) {
-          // If the current page becomes empty, navigate to the previous page
-          handlePageChange(1);
-        } else {
-          // Otherwise, refetch the current page
-          refetch();
-        }
+        await serviceApi.deleteService(currentServiceId);
+        setDialogOpen(false);
+        refetch();
       } catch (error) {
-        console.error("Error deleting hotel:", error);
+        console.error("Error deleting service:", error);
       }
     }
   };
@@ -81,16 +57,19 @@ const HotelIndex = () => {
           <CardHeader className="border-b border-solid border-[#f3f3f3] p-[15px]">
             <CardTitle className="uppercase">{breadcrumb.index.title}</CardTitle>
             <CardDescription className="text-xs">
-              Hiển thị danh sách khách sạn, sử dụng các chức năng bên dưới để quản lý.
+              Hiển thị danh sách dịch vụ, sử dụng các chức năng bên dưới để quản lý.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-[15px]">
-            <Filter
-              isAnyChecked={somethingChecked}
-              checkedState={checkedState}
-              openSheet={openSheet}
-              handleQueryString={handleQueryString}
-            />
+            <div className="w-full sm:w-auto p-0 flex justify-end mb-5">
+              <Button
+                className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]"
+                onClick={() => openSheet({ open: true, action: '', id: '34535' })}
+              >
+                <FaPlus />
+                Thêm mới dịch vụ
+              </Button>
+            </div>
             {isLoading && (
               <p className="flex text-center items-center justify-center">
                 <LoadingSpinner /> Đang tải dữ liệu...
@@ -98,7 +77,7 @@ const HotelIndex = () => {
             )}
             {error && (
               <p className="text-red-500">
-                Lỗi khi lấy danh sách khách sạn: {error.message}
+                Lỗi khi lấy danh sách dịch vụ: {error.message}
               </p>
             )}
             <CustomTable
@@ -108,13 +87,13 @@ const HotelIndex = () => {
                 ...action,
                 onClick: action.onClick
                   ? (id) =>
-                      action.onClick(
-                        id,
-                        action.method === "update" ? openSheet : openDialog
-                      )
+                    action.onClick(
+                      id,
+                      action.method === "update" ? openSheet : openDialog
+                    )
                   : undefined,
               }))}
-              caption="Danh sách khách sạn"
+              caption="Danh sách dịch vụ"
               checkedState={checkedState}
               checkedAllState={checkedAllState}
               handleCheckedChange={handleCheckedChange}
@@ -122,13 +101,6 @@ const HotelIndex = () => {
               openSheet={openSheet}
             />
           </CardContent>
-          <CardFooter className="flex justify-center">
-            <Paginate
-              page={page}
-              totalPages={totalPages}
-              handlePageChange={handlePageChange}
-            />
-          </CardFooter>
         </Card>
         <CustomSheet
           title={
@@ -141,9 +113,9 @@ const HotelIndex = () => {
           closeSheet={closeSheet}
           className="w-[1000px] sm:w-[1000px]"
         >
-          <HotelStore
+          <ServiceStore
             closeSheet={closeSheet}
-            hotelId={isSheetOpen.id}
+            serviceId={isSheetOpen.id}
             action={isSheetOpen.action}
             onSubmitSuccess={refetch}
           />
@@ -162,4 +134,4 @@ const HotelIndex = () => {
   );
 };
 
-export default HotelIndex;
+export default ServiceIndex;

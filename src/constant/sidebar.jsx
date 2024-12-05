@@ -1,6 +1,6 @@
 export const sidebarItem = [
     {
-        label: 'MAIN',
+        label: 'THEO DÕI',
         items: [
             {
                 icon: <i className="fa-solid fa-chart-line"></i>,
@@ -14,34 +14,42 @@ export const sidebarItem = [
         ]
     },
     {
-        label: 'MANAGEMENT',
+        label: 'QUẢN TRỊ',
         items: [
             {
                 icon: <i className="fa-solid fa-users-gear"></i>,
                 active: ['user'],
-                label: 'User management',
+                label: 'Quản lý  người dùng',
                 links: [
-                    {title: ' Quản lý chung ', to: '/user/index'},
-                    {title: ' Quản lý admin ', to: '/user/admin'},
-                    {title: ' Quản lý nhân viên', to: '/user/staff'},
-                    {title: ' Quản lý khách hàng', to: '/user/customer'}
+                    {title: ' Danh sách chung ', to: '/user/index'},
+                    {title: ' Quản lý', to: '/user/admin'},
+                    {title: ' Nhân viên', to: '/user/staff'},
+                    {title: ' Khách hàng', to: '/user/customer'}
                 ]
             },
             {
                 icon: <i className="fa-solid fa-hotel"></i>,
                 active: ['hotel'],                
-                label: 'Hotel management',
+                label: 'Quản lý khách sạn',
                 links: [
-                    {title: ' Quản lý khách sạn', to: '/hotel/index'},
-                    {title: ' Quản lý chi nhánh', to: '/hotel/index'}
+                    {title: ' Khách sạn', to: '/hotel/index'},
+                    {title: ' Chi nhánh', to: '/hotel/index'}
                 ]
             },
             {
                 icon: <i className="fa-brands fa-buromobelexperte"></i>,
-                label: 'Rom management',
+                label: 'Quản lý phòng',
                 links: [
-                    {title: ' Quản lý phòng', to: '/room/index'},
-                    {title: ' Quản lý loại phòng', to: 'room/room-types'}
+                    {title: ' Phòng', to: '/room/index'},
+                    {title: ' Loại phòng', to: 'room/room-types'}
+                ]
+            },
+            {
+                icon: <i class="fa-solid fa-list"></i>,
+                label: 'Các mục khác',
+                links: [
+                    {title: 'Dịch vụ', to: '/services'},
+                    {title: ' Phiếu giảm giá', to: '/vouchers'}
                 ]
             }
         ]

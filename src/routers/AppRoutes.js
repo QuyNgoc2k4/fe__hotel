@@ -23,6 +23,11 @@ import RoomIndex from "../pages/rooms/room/View";
 import RoomType from "../pages/rooms/roomTypes/View";
 import RoomImage from "../pages/rooms/room/Album";
 
+// pages/others/services
+import ServiceIndex from "../pages/others/services/View";
+
+// pages/others/vouchers
+// import VoucherIndex from "../pages/others/vouchers/View";
 
 // pages/account
 import Profile from "../pages/acount/profile";
@@ -64,6 +69,10 @@ const AppRoutes = () => {
         <Route path="room/index" element={<RoomIndex />} />
         <Route path="room/room-types" element={<RoomType />} />
         <Route path="room-images/:roomId" element={<RoomImage />} />
+
+        {/* Orthers Management */}
+        <Route path="services" element={<ServiceIndex />} />
+
 
         {/* Account */}
         <Route path="profile" element={<Profile />} />

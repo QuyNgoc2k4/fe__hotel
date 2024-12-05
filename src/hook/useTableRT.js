@@ -6,7 +6,7 @@ const useTableRT = ({ apiMethod }) => {
   const navigate = useNavigate();
 
   const [page, setPage] = useState(1); // Current page
-  const [limit] = useState(3); // Items per page
+  const [limit] = useState(10); // Items per page
   const [filters, setFilters] = useState({}); // Filters
 
   // Fetch data function

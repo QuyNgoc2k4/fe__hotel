@@ -1,5 +1,6 @@
 import React from "react";
-
+import { MdFirstPage, MdNavigateNext, MdLastPage } from "react-icons/md";
+import { GrFormPrevious } from "react-icons/gr";
 const Paginate = ({ page, totalPages, handlePageChange }) => {
   const pages = [];
   const maxPagesToShow = 5; // Number of visible page buttons
@@ -25,7 +26,7 @@ const Paginate = ({ page, totalPages, handlePageChange }) => {
         disabled={page === 1}
         className={`px-3 py-1 border rounded ${page === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
       >
-        First
+       <MdFirstPage />
       </button>
 
       {/* Previous Button */}
@@ -34,7 +35,7 @@ const Paginate = ({ page, totalPages, handlePageChange }) => {
         disabled={page === 1}
         className={`px-3 py-1 border rounded ${page === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
       >
-        Previous
+       <GrFormPrevious />
       </button>
 
       {/* Page Buttons */}
@@ -64,7 +65,7 @@ const Paginate = ({ page, totalPages, handlePageChange }) => {
         disabled={page === totalPages}
         className={`px-3 py-1 border rounded ${page === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
       >
-        Next
+     <MdNavigateNext />
       </button>
 
       {/* Last Button */}
@@ -73,7 +74,7 @@ const Paginate = ({ page, totalPages, handlePageChange }) => {
         disabled={page === totalPages}
         className={`px-3 py-1 border rounded ${page === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
       >
-        Last
+      <MdLastPage />
       </button>
     </div>
   );

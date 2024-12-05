@@ -31,10 +31,12 @@ const RoleBasedIndex = ({ role = "", title, breadcrumbKey }) => {
     error,
     isLoading,
     page,
+    limit,
+    filters,
     refetch,
     handlePageChange,
     handleQueryString,
-  } = useTable({ role });
+  } = useTable({ role }); // Lấy data và các hàm xử lý từ useTable
 
   const { checkedState, checkedAllState, handleCheckedChange, handleCheckAllChange, isAnyChecked } =
     useCheckBoxState(data || []);
@@ -49,19 +51,25 @@ const RoleBasedIndex = ({ role = "", title, breadcrumbKey }) => {
   const handleDelete = async () => {
     if (currentUserId) {
       try {
-        await userApi.deleteUser(currentUserId);
-        setDialogOpen(false);
-        refetch(); // Refetch data to update UI immediately
+        await userApi.deleteUser(currentUserId); // Xóa user
+        setDialogOpen(false); // Đóng dialog sau khi xóa
+
+        const updatedData = await userApi.getUsers(page, limit, { ...filters, role });
+
+        if (updatedData.users.length === 0 && page > 1) {
+          handlePageChange(page - 1); // Chuyển về trang trước nếu trang hiện tại không còn dữ liệu
+        } else {
+          refetch(); // Làm mới trang hiện tại nếu còn dữ liệu
+        }
       } catch (error) {
         console.error("Error deleting user:", error);
       }
     }
   };
 
-  // Xử lý breadcrumbKey cho vai trò "tất cả"
   const currentBreadcrumb = breadcrumb[breadcrumbKey]?.index || breadcrumb.index.index;
 
-  const tableColumns = getTableColumns(role); // Lấy cột dựa trên vai trò
+  const tableColumns = getTableColumns(role);
 
   return (
     <>
