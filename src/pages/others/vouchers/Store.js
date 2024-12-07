@@ -1,99 +1,73 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { useForm, FormProvider } from "react-hook-form";
-import Select from "react-select";
 
-// api
-import { serviceApi } from "../../../api/serviceApi";
-import { hotelApi } from "../../../api/hotelApi";
+// API
+import { voucherApi } from "../../../api/voucherApi";
 
-// components
+// Components
 import CustomInput from "../../../components/ui/CustomInput";
 import LoadingButton from "../../../components/ui/LoadingButton";
 
-// hooks
-import useFormSubmit from "../../../hook/useFormSubmit";
-// validate
-import { validation } from "../../../validation/others/StoreServiceValidation";
+// Validation
+import { validation } from "../../../validation/others/StoreVoucherValidation";
+import { formatDateForInput } from "../../../lib/dateUtils";
 
-interface ServiceStoreProps {
+
+interface VoucherStoreProps {
   closeSheet: () => void;
-  serviceId: string | null;
+  voucherId: string | null;
   action: string;
   onSubmitSuccess: () => void;
 }
 
-const ServiceStore = ({ serviceId, action, closeSheet, onSubmitSuccess }: ServiceStoreProps) => {
+const VoucherStore = ({ voucherId, action, closeSheet, onSubmitSuccess }: VoucherStoreProps) => {
   const methods = useForm();
-  const [hotels, setHotels] = useState([]);
-  const [selectedHotel, setSelectedHotel] = useState(null); // State for the selected hotel
-
   const { setValue, handleSubmit: handleFormSubmit } = methods;
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery(
-    ["service", serviceId],
-    () => serviceApi.getServiceById(serviceId),
+    ["voucher", voucherId],
+    () => voucherApi.getVoucherById(voucherId),
     {
-      enabled: action === "update" && !!serviceId,
+      enabled: action === "update" && !!voucherId,
     }
   );
 
   useEffect(() => {
     if (action === "update" && data) {
       Object.keys(data).forEach((key) => {
-        setValue(key, data[key] || "");
-      });
-
-      // Set default selected hotel
-      if (data.hotel_id && hotels.length > 0) {
-        const hotel = hotels.find((hotel) => hotel.value === data.hotel_id);
-        setSelectedHotel(hotel || null);
-      }
-    }
-  }, [data, setValue, action, hotels]);
-
-  useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        const response = await hotelApi.getHotels(1, 100);
-        const hotelOptions = Array.isArray(response.hotels)
-          ? response.hotels.map((hotel) => ({ value: hotel.id, label: hotel.name }))
-          : [];
-        setHotels(hotelOptions);
-
-        // Set default selected hotel if updating and data is already loaded
-        if (data?.hotel_id) {
-          const defaultHotel = hotelOptions.find((hotel) => hotel.value === data.hotel_id);
-          setSelectedHotel(defaultHotel || null);
+        // Handle date fields
+        if (key === "start_date" || key === "end_date") {
+          setValue(key, formatDateForInput(data[key]));
+        } else {
+          setValue(key, data[key] || "");
         }
-      } catch (error) {
-        console.error("Failed to fetch hotels:", error);
-      }
-    };
-    fetchHotels();
-  }, [data]);
+      });
+    }
+  }, [data, setValue, action]);
 
   const onSubmitHandler = async (payload: Record<string, any>) => {
     try {
-      // Parse the price field to a float
       const formattedPayload = {
         ...payload,
-        price: parseFloat(payload.price || "0"), // Ensure price is a Float
+        discount_amount: parseInt(payload.discount_amount || "0", 10),
+        discount_percentage: parseInt(payload.discount_percentage || "0", 10),
+        max_discount_amount: parseInt(payload.max_discount_amount || "0", 10),
+        min_spend_amount: parseInt(payload.min_spend_amount || "0", 10),
+        usage_limit: parseInt(payload.usage_limit || "0", 10),
       };
 
-      if (action === "update" && serviceId) {
-        // Update service
-        await serviceApi.updateService({ serviceId, data: formattedPayload });
-        queryClient.invalidateQueries(["services"]); // Invalidate cache to refresh data
+      if (action === "update" && voucherId) {
+        await voucherApi.updateVoucher({ voucherId, data: formattedPayload });
+        queryClient.invalidateQueries(["vouchers"]);
       } else {
-        // Create service
-        await serviceApi.createService(formattedPayload);
-        queryClient.invalidateQueries(["services"]); // Invalidate cache to refresh data
+        await voucherApi.createVoucher(formattedPayload);
+        queryClient.invalidateQueries(["vouchers"]);
       }
 
-      closeSheet(); // Close the sheet after success
-      onSubmitSuccess(); // Trigger any success callback
+      closeSheet();
+      onSubmitSuccess();
     } catch (error) {
       console.error("Error occurred while submitting the form:", error);
     }
@@ -103,7 +77,7 @@ const ServiceStore = ({ serviceId, action, closeSheet, onSubmitSuccess }: Servic
     <FormProvider {...methods}>
       <form onSubmit={handleFormSubmit(onSubmitHandler)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-          {validation(action).map((item, index) => (
+          {validation(data).map((item, index) => (
             <div key={index}>
               <CustomInput
                 label={item.label}
@@ -112,22 +86,10 @@ const ServiceStore = ({ serviceId, action, closeSheet, onSubmitSuccess }: Servic
                 type={item.type}
                 register={methods.register}
                 rules={item.rules}
+                defaultValue={item.defaultValue}
               />
             </div>
           ))}
-          <div className="mb-4 flex items-center justify-between">
-            <label className="block text-sm font-medium text-gray-700">Chọn khách sạn</label>
-            <Select
-              options={hotels}
-              value={selectedHotel} // Set the selected value
-              onChange={(selectedOption) => {
-                setValue("hotel_id", selectedOption ? selectedOption.value : null);
-                setSelectedHotel(selectedOption);
-              }}
-              placeholder="Chọn tên khách sạn"
-              className="w-[320px]"
-            />
-          </div>
         </div>
         <div className="text-right">
           <LoadingButton
@@ -141,4 +103,4 @@ const ServiceStore = ({ serviceId, action, closeSheet, onSubmitSuccess }: Servic
   );
 };
 
-export default ServiceStore;
+export default VoucherStore;

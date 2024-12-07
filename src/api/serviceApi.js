@@ -55,7 +55,7 @@ const serviceApi = {
       // Loại bỏ các trường không hợp lệ
       const { id, created_at, updated_at, ...filteredData } = data;
   
-      console.log(filteredData); // Kiểm tra dữ liệu trước khi gửi
+      // console.log(filteredData); // Kiểm tra dữ liệu trước khi gửi
       
       const response = await apiClient.patch(`${ENDPOINTS.SERVICES}/${serviceId}`, filteredData, {
         headers: { "Content-Type": "application/json" },

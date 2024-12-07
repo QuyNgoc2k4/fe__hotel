@@ -54,9 +54,9 @@ const voucherApi = {
   updateVoucher: async ({ voucherId, data }) => {
     try {
       // Loại bỏ các trường không hợp lệ
-      const { id, created_at, updated_at, ...filteredData } = data;
+      const { id, created_at, updated_at,used_count,...filteredData } = data;
 
-      console.log(filteredData); // Kiểm tra dữ liệu trước khi gửi
+      // console.log(filteredData); // Kiểm tra dữ liệu trước khi gửi
       
       const response = await apiClient.patch(`${ENDPOINTS.VOUCHERS}/${voucherId}`, filteredData, {
         headers: { "Content-Type": "application/json" },

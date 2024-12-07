@@ -1,25 +1,24 @@
 import React, { useState } from "react";
-import { serviceApi } from "../../../api/serviceApi";
-import { tableColumn, buttonAction, breadcrumb } from "../../../setting/service";
+import { voucherApi } from "../../../api/voucherApi";
+import { tableColumn, buttonAction, breadcrumb } from "../../../setting/voucher";
 import PageHeading from "../../../components/heading";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card";
 import { LoadingSpinner } from "../../../components/ui/loading";
 import CustomTable from "../../../components/ui/customTable";
 import CustomSheet from "../../../components/ui/CustomSheet";
 import CustomDialog from "../../../components/ui/CustomDialog";
-import useTableS from "../../../hook/useTableS";
+import useTableV from "../../../hook/useTableV";
 import useCheckBoxState from "../../../hook/useCheckBoxState";
 import useSheet from "../../../hook/useSheet";
-import ServiceStore from "./Store";
+import VoucherStore from "./Store";
 import { Button } from "../../../components/ui/button";
 import { FaPlus } from "react-icons/fa6";
 
-
-const ServiceIndex = () => {
+const VoucherIndex = () => {
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [currentServiceId, setCurrentServiceId] = useState(null);
+  const [currentVoucherId, setCurrentVoucherId] = useState(null);
 
-  const { data, error, isLoading, refetch } = useTableS({ apiMethod: serviceApi.getServices });
+  const { data, error, isLoading, refetch } = useTableV({ apiMethod: voucherApi.getVouchers });
 
   const {
     checkedState,
@@ -32,19 +31,19 @@ const ServiceIndex = () => {
   const somethingChecked = isAnyChecked();
   const { isSheetOpen, openSheet, closeSheet } = useSheet();
 
-  const openDialog = (serviceId) => {
-    setCurrentServiceId(serviceId);
+  const openDialog = (voucherId) => {
+    setCurrentVoucherId(voucherId);
     setDialogOpen(true);
   };
 
   const handleDelete = async () => {
-    if (currentServiceId) {
+    if (currentVoucherId) {
       try {
-        await serviceApi.deleteService(currentServiceId);
+        await voucherApi.deleteVoucher(currentVoucherId);
         setDialogOpen(false);
         refetch();
       } catch (error) {
-        console.error("Error deleting service:", error);
+        console.error("Error deleting voucher:", error);
       }
     }
   };
@@ -57,17 +56,17 @@ const ServiceIndex = () => {
           <CardHeader className="border-b border-solid border-[#f3f3f3] p-[15px]">
             <CardTitle className="uppercase">{breadcrumb.index.title}</CardTitle>
             <CardDescription className="text-xs">
-              Hiển thị danh sách dịch vụ, sử dụng các chức năng bên dưới để quản lý.
+              Hiển thị danh sách voucher, sử dụng các chức năng bên dưới để quản lý.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-[15px]">
             <div className="w-full sm:w-auto p-0 flex justify-end mb-5">
               <Button
                 className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]"
-                onClick={() => openSheet({ open: true, action: '', id: '34535' })}
+                onClick={() => openSheet({ open: true, action: "", id: "34535" })}
               >
                 <FaPlus />
-                Thêm mới dịch vụ
+                Thêm mới voucher
               </Button>
             </div>
             {isLoading && (
@@ -77,7 +76,7 @@ const ServiceIndex = () => {
             )}
             {error && (
               <p className="text-red-500">
-                Lỗi khi lấy danh sách dịch vụ: {error.message}
+                Lỗi khi lấy danh sách voucher: {error.message}
               </p>
             )}
             <CustomTable
@@ -87,13 +86,13 @@ const ServiceIndex = () => {
                 ...action,
                 onClick: action.onClick
                   ? (id) =>
-                    action.onClick(
-                      id,
-                      action.method === "update" ? openSheet : openDialog
-                    )
+                      action.onClick(
+                        id,
+                        action.method === "update" ? openSheet : openDialog
+                      )
                   : undefined,
               }))}
-              caption="Danh sách dịch vụ"
+              caption="Danh sách voucher"
               checkedState={checkedState}
               checkedAllState={checkedAllState}
               handleCheckedChange={handleCheckedChange}
@@ -113,9 +112,9 @@ const ServiceIndex = () => {
           closeSheet={closeSheet}
           className="w-[1000px] sm:w-[1000px]"
         >
-          <ServiceStore
+          <VoucherStore
             closeSheet={closeSheet}
-            serviceId={isSheetOpen.id}
+            voucherId={isSheetOpen.id}
             action={isSheetOpen.action}
             onSubmitSuccess={refetch}
           />
@@ -134,4 +133,4 @@ const ServiceIndex = () => {
   );
 };
 
-export default ServiceIndex;
+export default VoucherIndex;

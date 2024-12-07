@@ -25,6 +25,7 @@ import RoomImage from "../pages/rooms/room/Album";
 
 // pages/others/services
 import ServiceIndex from "../pages/others/services/View";
+import VoucherIndex from "../pages/others/vouchers/View";
 
 // pages/others/vouchers
 // import VoucherIndex from "../pages/others/vouchers/View";
@@ -72,6 +73,7 @@ const AppRoutes = () => {
 
         {/* Orthers Management */}
         <Route path="services" element={<ServiceIndex />} />
+        <Route path="vouchers" element={<VoucherIndex />} />
 
 
         {/* Account */}

@@ -107,14 +107,7 @@ export const validation = (data = {}, role = "admin") => {
   if (role === "staff") {
     return [
       ...commonFields,
-      {
-        label: "ID Khách sạn",
-        id: "hotel_id",
-        name: "hotel_id",
-        type: "text",
-        rules: { required: "Bạn chưa nhập ID khách sạn" },
-        defaultValue: data.hotel_id || "",
-      },
+   
       {
         label: "Vai trò",
         id: "role",
