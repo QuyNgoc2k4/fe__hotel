@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { FaRegImages } from "react-icons/fa";
+import { BsBuildingFillAdd } from "react-icons/bs";
 import RoomTypeName from "../components/RoomTypeName";
 
 export const tableColumn = [
@@ -59,34 +60,20 @@ export const tableColumn = [
 export const buttonAction = [
   {
     path: (room) => `/rooms/edit/${room.id}`,
-    icon: <FaEdit className="text-white text-xl" />,
+    icon: <BsBuildingFillAdd className="text-white text-xl" />,
     className: "mr-[5px] bg-[#536485] hover:bg-[#39455c]",
-    method: "update",
+
     onClick: (id, openSheet) => {
-      if (openSheet) openSheet({ open: true, action: "update", id });
+      console.log("Room ID:", id); // Log the room ID to the console
+      if (openSheet) openSheet({ open: true, id });
     },
-  },
-  {
-    path: (room) => `/rooms/delete/${room.id}`,
-    icon: <MdDeleteForever className="text-white text-xl" />,
-    className: "mr-[5px] bg-[#ec4758] hover:bg-[#d03f4d]",
-    method: "delete",
-    onClick: (id, openDialog) => {
-      if (openDialog) openDialog(id); // Mở dialog xác nhận
-    },
-  },
-  {
-    path: (room) => `/room-images/${room.id}`,
-    icon: <FaRegImages className="text-white text-xl" />,
-    className: "mr-[5px] bg-[#111C43] hover:bg-[#0b1331]",
-    method: "viewImages",
-  },
+  }
 ];
 
 export const breadcrumb = {
   index: {
-    title: "Quản lý phòng",
-    to: "/room/index",
+    title: "Danh sách phòng trống",
+    to: "/room-available",
   },
   create: {
     title: "Thêm mới phòng",

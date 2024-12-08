@@ -8,8 +8,8 @@ export const is_smoking = [
     { value: 'false', name: 'Không cho phép' },
 ];
 export const status = [
-    { value: 'true', name: 'Đang hoạt động' },
-    { value: 'false', name: 'Không hoạt động' },
+    { value: 'true', name: 'Phòng đã được đặt' },
+    { value: 'false', name: 'Phòng trống' },
 ];
 
 

@@ -17,6 +17,14 @@ export const sidebarItem = [
         label: 'QUẢN TRỊ',
         items: [
             {
+                icon: <i class="fa-solid fa-square-plus"></i>,
+                label: 'Quản lý  đặt phòng',
+                links: [
+                    {title: ' Xem phòng trống ', to: '/room-available'},
+                    {title: ' Quản lý đặt phòng ', to: '/list-booking'},
+                ]
+            },
+            {
                 icon: <i className="fa-solid fa-users-gear"></i>,
                 active: ['user'],
                 label: 'Quản lý  người dùng',

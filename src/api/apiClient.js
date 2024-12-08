@@ -31,7 +31,8 @@ apiClient.interceptors.response.use(
       localStorage.removeItem("token"); // Xóa token
       window.location.href = "/login"; // Chuyển hướng đến trang đăng nhập
     } else if (error.response?.status === 500) {
-      message.error("Lỗi server, vui lòng thử lại sau.");
+      localStorage.removeItem("token"); // Xóa token
+      window.location.href = "/login"; // Chuyển hướng đến trang đăng nhập
     }
     return Promise.reject(error);
   }

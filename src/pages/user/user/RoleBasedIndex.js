@@ -62,7 +62,7 @@ const RoleBasedIndex = ({ role = "", title, breadcrumbKey }) => {
           refetch(); // Làm mới trang hiện tại nếu còn dữ liệu
         }
       } catch (error) {
-        console.error("Error deleting user:", error);
+        // console.error("Error deleting user:", error);
       }
     }
   };

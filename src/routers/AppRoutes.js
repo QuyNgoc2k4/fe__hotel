@@ -27,8 +27,9 @@ import RoomImage from "../pages/rooms/room/Album";
 import ServiceIndex from "../pages/others/services/View";
 import VoucherIndex from "../pages/others/vouchers/View";
 
-// pages/others/vouchers
-// import VoucherIndex from "../pages/others/vouchers/View";
+// pages/booking/room_available
+import RoomAvailable from "../pages/booking/room/RoomAvailable";
+import BookingIndex from "../pages/booking/booking/View";
 
 // pages/account
 import Profile from "../pages/acount/profile";
@@ -75,6 +76,9 @@ const AppRoutes = () => {
         <Route path="services" element={<ServiceIndex />} />
         <Route path="vouchers" element={<VoucherIndex />} />
 
+        {/* Booking */}
+        <Route path="room-available" element={<RoomAvailable />} />
+        <Route path="list-booking" element={<BookingIndex />} />
 
         {/* Account */}
         <Route path="profile" element={<Profile />} />
