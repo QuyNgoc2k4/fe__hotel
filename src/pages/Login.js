@@ -24,7 +24,7 @@ const Login = () => {
     // Kiểm tra nếu đã có token trong localStorage, chuyển hướng tới trang dashboard
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/dashboard");
+      navigate("/");
     }
   }, [navigate]);
   const onFinish = async (values) => {
@@ -44,7 +44,7 @@ const Login = () => {
         if (rememberMe) {
           localStorage.setItem("rememberMe", "true");
         }
-        navigate("/dashboard");
+        navigate("/");
       } else if (response.data.status === 'error') {
         message.error(response.data.message);
       }
@@ -66,7 +66,7 @@ const Login = () => {
       if (res.data.status === "success") {
         message.success("Đăng nhập Google thành công!");
         localStorage.setItem("token", res.data.data.token);
-        navigate("/dashboard");
+        navigate("/");
       } else {
         message.error(res.data.message);
       }

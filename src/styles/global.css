@@ -187,7 +187,16 @@ body[data-scroll-locked="1"] {
 }
 
 /* Responsive Adjustments */
-@media screen and (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px) {
+   /* .openside{
+    margin-left: 230px;
+  } */
+  .container {
+    width: 700px !important;
+    padding: 0;
+  }
+}
+@media (max-width: 768px) {
   .app-aside {
     position: fixed;
     top: 0;
@@ -216,7 +225,7 @@ body[data-scroll-locked="1"] {
 }
 @media (max-width: 767px) {
   .cuscard{
-    width: 380px !important;
+    width: 100% !important;
   }
   .custom-sheet{
     width: 400px !important;
@@ -230,7 +239,7 @@ body[data-scroll-locked="1"] {
   }
   /* Container */
 .container {
-  width: 100%;
+  width: 400px !important;
   padding: 0;
 }
 }
