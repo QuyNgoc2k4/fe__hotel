@@ -6,7 +6,32 @@ import App from "./App";
 import {
   QueryClient,
   QueryClientProvider,
-} from 'react-query'
+} from 'react-query';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 const queryClient =new QueryClient();
 
 ReactDOM.render(
