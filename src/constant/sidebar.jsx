@@ -8,7 +8,7 @@ export const sidebarItem = [
                 label: 'Dashboard',
                 links: [
                     {title: 'Thống kê chung', to: '/'},
-                    {title: 'Thống kê khách hàng', to: '/dashboard/user/index'}
+                    
                 ]
             }
         ]

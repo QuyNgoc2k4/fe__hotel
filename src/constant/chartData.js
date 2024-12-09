@@ -3,7 +3,7 @@ export const barData = {
     datasets: [
       {
         label: "Doanh thu (triệu VND)",
-        data: [150, 200, 180, 250, 300, 280],
+        data: [0, 0, 0, 0, 0, 0],
         backgroundColor: "rgba(54, 162, 235, 0.6)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
@@ -29,7 +29,7 @@ export const barData = {
     datasets: [
       {
         label: "Lượt đặt phòng",
-        data: [100, 120, 140, 180, 200, 220],
+        data: [0, 0, 0,0, 0,0],
         fill: false,
         borderColor: "rgba(75, 192, 192, 1)",
         tension: 0.1,
@@ -55,7 +55,7 @@ export const barData = {
     datasets: [
       {
         label: "Tình trạng phòng",
-        data: [12, 8, 3],
+        data: [4, 4, 0],
         backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
       },
     ],
