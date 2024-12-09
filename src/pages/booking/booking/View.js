@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
@@ -17,9 +16,12 @@ import { bookingTableColumn, bookingButtonAction, bookingBreadcrumb } from "../.
 import CustomSheet from "../../../components/ui/CustomSheet";
 import BookingStored from "./Store";
 import { LoadingSpinner } from "../../../components/ui/loading";
+import BookingDetailsDialog from "./BookingDetails"; // Import the BookingDetailsDialog component
 
 const BookingIndex = () => {
   const [searchFilters, setSearchFilters] = useState({});
+  const [currentBooking, setCurrentBooking] = useState(null);
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const { allData, filteredData, error, isLoading, setFilteredData, refetch } =
     useTableB({ apiMethod: bookingApi.getBookings });
@@ -29,6 +31,18 @@ const BookingIndex = () => {
 
   const { isSheetOpen, openSheet, closeSheet } = useSheet();
 
+  // Open dialog to display booking details
+  const openDialog = async (bookingId) => {
+    try {
+      const response = await bookingApi.getBookingDetails(bookingId); // Fetch booking details API
+      setCurrentBooking(response);
+      console.log("Booking details set to:", response); // Debug log
+      setDialogOpen(true); // Open the dialog
+    } catch (err) {
+      console.error("Failed to fetch booking details:", err);
+    }
+  };
+  
   // Apply frontend filtering
   useEffect(() => {
     if (allData.length > 0) {
@@ -70,7 +84,7 @@ const BookingIndex = () => {
                 columns={bookingTableColumn}
                 actions={bookingButtonAction.map((action) => ({
                   ...action,
-                  onClick: action.onClick ? (id) => action.onClick(id, openSheet) : undefined,
+                  onClick: action.onClick ? (id) => action.onClick(id, openDialog) : undefined,
                 }))}
                 caption="Danh sách đặt phòng"
                 checkedState={checkedState}
@@ -97,6 +111,14 @@ const BookingIndex = () => {
             bookingId={isSheetOpen.id} // Retrieve booking ID from sheet state
           />
         </CustomSheet>
+        <BookingDetailsDialog
+          isOpen={isDialogOpen}
+          onClose={() => {
+            setDialogOpen(false);
+            setCurrentBooking(null);
+          }}
+          booking={currentBooking}
+        />
       </div>
     </>
   );

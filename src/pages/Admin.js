@@ -61,12 +61,7 @@ const Admin = () => {
             <MainSidebar />
           )}
         </div>
-        <button
-          onClick={refetch}
-          className="fixed bottom-4 right-4 bg-blue-500 text-white p-2 rounded"
-        >
-          Refresh Data
-        </button>
+        
       </div>
     </div>
   );

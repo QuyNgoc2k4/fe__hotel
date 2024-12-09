@@ -19,7 +19,7 @@ interface PageHeadingProps {
 
 const PageHeading: React.FC<PageHeadingProps> = ({ breadcrumb }) => {
   return (
-    <div className="page-heading py-[20px] bg-white border-b border-[#e7eaec]">
+    <div className="page-heading py-[20px]  bg-white border-b border-[#e7eaec]">
       <div className="px-[10px]">
         <h2 className="text-[24px] mb-[5px]">{breadcrumb.title}</h2>
         <Breadcrumb>

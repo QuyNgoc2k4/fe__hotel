@@ -48,9 +48,9 @@ const Filter = ({ isAnyChecked, checkedState,  openSheet, handleQueryString }) =
  
 
   return (
-    <div className="flex justify-between mb-[15px] items-center">
-      <div className="flex items-center">
-        <div className="mr-[10px]">
+    <div className="flex  flex-wrap justify-between mb-[15px] items-center gap-4 sm:gap-2">
+      <div className="flex  flex-wrap items-center gap-2">
+        {/* <div className="mr-[10px]">
           {isAnyChecked && (
             <Select onValueChange={(value) => handleStatus(value)}>
               <SelectTrigger className="w-[180px]">
@@ -68,7 +68,8 @@ const Filter = ({ isAnyChecked, checkedState,  openSheet, handleQueryString }) =
               </SelectContent>
             </Select>
           )}
-        </div>
+        </div> */}
+       
         <div className="mr-[10px]">
           <Select onValueChange={(value) => handleFilter(value, 'sort')}>
             <SelectTrigger className="w-[180px]">

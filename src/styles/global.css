@@ -216,7 +216,7 @@ body[data-scroll-locked="1"] {
 }
 @media (max-width: 767px) {
   .cuscard{
-    width: 350px !important;
+    width: 380px !important;
   }
   .custom-sheet{
     width: 400px !important;
@@ -224,4 +224,13 @@ body[data-scroll-locked="1"] {
   .openside{
     margin-left: 230px;
   }
+  .cus-dialog{
+    width: 338px !important;
+    left: 48% !important;
+  }
+  /* Container */
+.container {
+  width: 100%;
+  padding: 0;
+}
 }

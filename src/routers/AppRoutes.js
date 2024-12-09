@@ -54,7 +54,7 @@ const AppRoutes = () => {
         }
       >
         {/* Dashboard */}
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard />} />
 
         {/* User Management */}
         <Route path="user/index" element={<UserIndex />} />

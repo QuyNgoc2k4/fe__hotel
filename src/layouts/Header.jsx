@@ -56,17 +56,17 @@ const Header = ({
 
         {/* Rest of Header Content */}
         <div className="header-right-content flex justify-between items-center">
-          <div className="header-search">
+          {/* <div className="header-search">
             <IoIosSearch className="text-xl cursor-pointer" />
-          </div>
+          </div> */}
 
           <div className="notification-dropdown">
-            <Link to="/" className="header-link flex relative">
+            {/* <Link to="/" className="header-link flex relative">
               <GoBell className="cursor-pointer header-link-icon " />
               <span className="badge-bell absolute w-[14px] h-[15px] text-center rounded-full text-white">
                 5
               </span>
-            </Link>
+            </Link> */}
           </div>
           {/* <div className="shortcut-dropdown">
             <Link to="/" className="header-link flex ">

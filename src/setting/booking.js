@@ -100,6 +100,9 @@ export const bookingButtonAction = [
     path: (booking) => `/bookings/details/${booking.id}`,
     icon: <BsCardChecklist className="text-white text-xl" />,
     className: "mr-[5px] bg-[#0d9488] hover:bg-[#0a6c6a]",
+    onClick: (id, openDialog) => {
+      if (openDialog) openDialog(id);
+    },
   },
 ];
 

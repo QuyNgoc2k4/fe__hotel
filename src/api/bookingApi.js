@@ -39,6 +39,18 @@ const bookingApi = {
       handleApiError(error, "Không thể lấy thông tin booking!");
     }
   },
+  getBookingDetails: async (bookingId) => {
+  
+    
+    try {
+      const response = await apiClient.get(`${ENDPOINTS.BOOKINGS}/${bookingId}`);
+      // console.log(response.data.data);
+      return response.data.data;
+      
+    } catch (error) {
+      handleApiError(error, "Không thể lấy chi tiết booking!");
+    }
+  },
 
   createBooking: async (data) => {
     try {
