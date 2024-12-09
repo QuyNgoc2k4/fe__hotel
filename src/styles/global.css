@@ -203,6 +203,8 @@ body[data-scroll-locked="1"] {
   .app-header {
     padding-left: 0;
   }
+  
+  
 }
 /* Khi Sidebar Ẩn */
 .app-header.sidebar-hidden {
@@ -211,4 +213,15 @@ body[data-scroll-locked="1"] {
 
 .main-content.sidebar-hidden {
   margin-left: 0;
+}
+@media (max-width: 767px) {
+  .cuscard{
+    width: 350px !important;
+  }
+  .custom-sheet{
+    width: 400px !important;
+  }
+  .openside{
+    margin-left: 230px;
+  }
 }

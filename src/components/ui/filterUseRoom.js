@@ -49,12 +49,6 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
     setFilters((prevFilters) => ({ ...prevFilters, [field]: value }));
   };
 
-  const handleStatus = (value) => {
-    const [action, SelectedValue] = value.split("|");
-    actionSwitch(action, SelectedValue, checkedState);
-  };
-
-  // Reset all filters
   const resetFilters = () => {
     setFilters({
       room_type_id: "",
@@ -62,24 +56,25 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
       status: "",
     });
     setSearch("");
-    handleQueryString({}); // Cập nhật bộ lọc rỗng
+    handleQueryString({});
   };
 
   return (
-    <div className="flex justify-between mb-[15px] items-center">
-      <div className="flex items-center">
-      <Button
-          className="mr-2 bg-gray-400 text-white hover:bg-gray-500"
+    <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+      {/* Left Section */}
+      <div className="flex flex-wrap items-center gap-4">
+        <Button
+          className="bg-gray-400 text-white hover:bg-gray-500"
           onClick={resetFilters}
         >
           Hiện tất cả
         </Button>
-        <div className="mr-[10px]">
+        <div className="w-[200px] sm:w-[180px]">
           <Select
-            value={filters.room_type_id} // Điều khiển bằng state
+            value={filters.room_type_id}
             onValueChange={(value) => handleFilter(value, "room_type_id")}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
               <SelectValue placeholder="Select Room Type" />
             </SelectTrigger>
             <SelectContent className="bg-white">
@@ -88,7 +83,7 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
                   <SelectItem
                     key={roomType.id}
                     value={roomType.id}
-                    className="cursor-pointer hover:bg-[#a3aed17c]"
+                    className="cursor-pointer hover:bg-gray-200"
                   >
                     {roomType.name}
                   </SelectItem>
@@ -99,20 +94,20 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
             </SelectContent>
           </Select>
         </div>
-        <div className="mr-[10px]">
+        <div className="w-[200px] sm:w-[180px]">
           <Select
-            value={filters.is_smoking} // Điều khiển bằng state
+            value={filters.is_smoking}
             onValueChange={(value) => handleFilter(value, "is_smoking")}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
               <SelectValue placeholder="Sử dụng thuốc lá" />
             </SelectTrigger>
             <SelectContent className="bg-white">
               {is_smoking.map((item, index) => (
                 <SelectItem
                   key={index}
-                  className="cursor-pointer hover:bg-[#a3aed17c]"
                   value={item.value}
+                  className="cursor-pointer hover:bg-gray-200"
                 >
                   {item.name}
                 </SelectItem>
@@ -120,20 +115,20 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
             </SelectContent>
           </Select>
         </div>
-        <div className="mr-[10px]">
+        <div className="w-[200px] sm:w-[180px]">
           <Select
-            value={filters.status} // Điều khiển bằng state
+            value={filters.status}
             onValueChange={(value) => handleFilter(value, "status")}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
               <SelectValue placeholder="Trạng thái phòng" />
             </SelectTrigger>
             <SelectContent className="bg-white">
               {status.map((item, index) => (
                 <SelectItem
                   key={index}
-                  className="cursor-pointer hover:bg-[#a3aed17c]"
                   value={item.value}
+                  className="cursor-pointer hover:bg-gray-200"
                 >
                   {item.name}
                 </SelectItem>
@@ -141,19 +136,20 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
             </SelectContent>
           </Select>
         </div>
-        <div className="mr-[10px]">
+        <div className="w-full sm:w-auto">
           <Input
             type="text"
-            value={search} // Điều khiển bằng state
+            value={search}
             placeholder="Search..."
             onChange={(e) => debounceInputSearch(e.target.value)}
           />
         </div>
       </div>
+
+      {/* Right Section */}
       <div className="flex items-center">
-       
         <Button
-          className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]"
+          className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color] flex items-center gap-2"
           onClick={() => openSheet({ open: true, action: "", id: "34535" })}
         >
           <FaPlus />
@@ -165,3 +161,4 @@ const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) =>
 };
 
 export default Filter;
+

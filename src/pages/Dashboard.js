@@ -10,6 +10,7 @@ const Dashboard = () => {
   return (
     <>
     <PageHeading breadcrumb={breadcrumb}/>
+    <h2>Đang chờ có dữ liệu thực ...</h2>
     </>
   )
 };

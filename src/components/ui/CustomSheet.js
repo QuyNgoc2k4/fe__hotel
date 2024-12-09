@@ -21,7 +21,7 @@ const CustomSheet = ({ children, isSheetOpen, closeSheet, title, className, desc
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={closeSheet} disableBodyScroll={false}>
-      <SheetContent side="right" className={`${className ?? ''} overflow-y-scroll`}>
+      <SheetContent side="right" className={`${className ?? ''} custom-sheet overflow-y-scroll`}>
         <SheetHeader>
           <SheetTitle>{title}</SheetTitle>
           <SheetDescription className="text-[#f00000] text-xs">

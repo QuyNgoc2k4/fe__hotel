@@ -122,7 +122,7 @@ const RoleBasedIndex = ({ role = "", title, breadcrumbKey }) => {
           description="Nhập đầy đủ các thông tin dưới đây. Các mục có dấu (*) là bắt buộc"
           isSheetOpen={isSheetOpen.open}
           closeSheet={closeSheet}
-          className="w-[1000px] sm:w-[1000px]"
+          className="w-[1000px]"
         >
           <UserStore
             closeSheet={closeSheet}

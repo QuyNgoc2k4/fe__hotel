@@ -21,28 +21,25 @@ const CustomTable = ({
   checkedAllState = false, // Trạng thái checkbox "Chọn Tất Cả"
   handleCheckedChange, // Hàm xử lý khi thay đổi checkbox của hàng
   handleCheckAllChange, // Hàm xử lý khi thay đổi checkbox "Chọn Tất Cả"
-  openSheet
-
+  openSheet,
 }) => {
-    // Render phần tiêu đề bảng
-    const renderHeader = () => (
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px] text-center">
-            <Checkbox
-              checked={checkedAllState}
-              onCheckedChange={handleCheckAllChange}
-            />
-          </TableHead>
-          {columns.map((column, index) => (
-            <TableHead key={index}>{column.name}</TableHead>
-          ))}
-          <TableHead className="text-center">Hành động</TableHead>
-        </TableRow>
-      </TableHeader>
-    );
+  const renderHeader = () => (
+    <TableHeader>
+      <TableRow>
+        <TableHead className="w-[50px] text-center">
+          <Checkbox
+            checked={checkedAllState}
+            onCheckedChange={handleCheckAllChange}
+          />
+        </TableHead>
+        {columns.map((column, index) => (
+          <TableHead key={index}>{column.name}</TableHead>
+        ))}
+        <TableHead className="text-center">Hành động</TableHead>
+      </TableRow>
+    </TableHeader>
+  );
 
-  // Render các dòng dữ liệu
   const renderRows = () =>
     data.length > 0 ? (
       data.map((item, rowIndex) => (
@@ -60,28 +57,34 @@ const CustomTable = ({
             <TableCell key={colIndex}>{col.render(item)}</TableCell>
           ))}
           {actions.length > 0 && (
-          <TableCell className="flex justify-center">
-          {actions.map((action, actionIndex) => (
-            action.method === "viewImages" ? (
-              <Link
-                key={actionIndex}
-                to={action.path(item)} // Sử dụng path từ action
-                className={`${action.className || ""} p-0 p-[10px] flex items-center justify-center border border-solid border-gray-300 rounded`}
-              >
-                {action.icon}
-              </Link>
-            ) : (
-              <Button
-                key={actionIndex}
-                variant="outline"
-                className={`${action.className || ""} p-0 p-[10px]`}
-                onClick={action.onClick ? (e) => action.onClick(item.id, openSheet) : undefined}
-              >
-                {action.icon}
-              </Button>
-            )
-          ))}
-        </TableCell>
+            <TableCell className="flex justify-center">
+              {actions.map((action, actionIndex) =>
+                action.method === "viewImages" ? (
+                  <Link
+                    key={actionIndex}
+                    to={action.path(item)}
+                    className={`${
+                      action.className || ""
+                    } p-[5px] flex items-center justify-center border border-solid border-gray-300 rounded`}
+                  >
+                    {action.icon}
+                  </Link>
+                ) : (
+                  <Button
+                    key={actionIndex}
+                    variant="outline"
+                    className={`${action.className || ""} p-[5px]`}
+                    onClick={
+                      action.onClick
+                        ? (e) => action.onClick(item.id, openSheet)
+                        : undefined
+                    }
+                  >
+                    {action.icon}
+                  </Button>
+                )
+              )}
+            </TableCell>
           )}
         </TableRow>
       ))
@@ -94,12 +97,15 @@ const CustomTable = ({
     );
 
   return (
-    <Table className="border border-solid border-[#f3f3f3]">
-      <TableCaption>{caption}</TableCaption>
-      {renderHeader()}
-      <TableBody>{renderRows()}</TableBody>
-    </Table>
+    <div className="relative w-full overflow-x-auto sm:rounded-lg"> {/* Thêm overflow-x-auto và sm:rounded-lg */}
+      <Table className="border border-solid border-gray-300 text-xs sm:text-sm"> {/* text-xs trên mobile */}
+        <TableCaption>{caption}</TableCaption>
+        {renderHeader()}
+        <TableBody>{renderRows()}</TableBody>
+      </Table>
+    </div>
   );
 };
 
 export default CustomTable;
+

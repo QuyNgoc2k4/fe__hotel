@@ -14,89 +14,115 @@ import { sort, startDates } from "../../constant/general";
 import { FaPlus } from "react-icons/fa6";
 import useFilterAction from "../../hook/useFilterAction"; 
 import useDebounce from "../../hook/useDebounce"; 
-const Filter = ({ isAnyChecked, checkedState,  openSheet, handleQueryString }) => {
+const Filter = ({ isAnyChecked, checkedState, openSheet, handleQueryString }) => {
   const { actionSwitch } = useFilterAction();
   const location = useLocation();
 
   const handleStatus = (value) => {
-    const [action, SelectedValue] = value.split('|');
-    actionSwitch(action, SelectedValue, checkedState);  
+    const [action, SelectedValue] = value.split("|");
+    actionSwitch(action, SelectedValue, checkedState);
   };
 
   const [filters, setFilters] = useState({
-    sort: '',
+    sort: "",
   });
 
-  const [search, setSearch] = useState(''); 
+  const [search, setSearch] = useState("");
   const { debounce } = useDebounce();
-  const debounceInputSearch = debounce((value) => {    
+  const debounceInputSearch = debounce((value) => {
     setSearch(value);
   }, 300);
 
   useEffect(() => {
-    handleQueryString({ search,...filters}); 
+    handleQueryString({ search, ...filters });
   }, [search]);
 
-  const handleFilter = (value, field) => {    
-    setFilters(prevFilters => ({ ...prevFilters, [field]: value }));
+  const handleFilter = (value, field) => {
+    setFilters((prevFilters) => ({ ...prevFilters, [field]: value }));
   };
 
   useEffect(() => {
-    handleQueryString({ search,...filters });
+    handleQueryString({ search, ...filters });
     console.log(filters);
-    
   }, [filters]);
- 
 
   return (
-    <div className="flex justify-between mb-[15px] items-center">
-      <div className="flex items-center">
-        <div className="mr-[10px]">
-          {isAnyChecked && (
+    <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+      {/* Left Section */}
+      <div className="flex flex-wrap items-center gap-4">
+        {isAnyChecked && (
+          <div className="w-full sm:w-auto">
             <Select onValueChange={(value) => handleStatus(value)}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="With selected" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectItem className="cursor-pointer hover:bg-[#a3aed17c]" value="deleteAll">
+                <SelectItem
+                  className="cursor-pointer hover:bg-gray-200"
+                  value="deleteAll"
+                >
                   <div className="flex items-center">
                     <MdDeleteForever />
                     Delete All
                   </div>
                 </SelectItem>
-                <SelectItem className="cursor-pointer hover:bg-[#a3aed17c]" value="publish|1">1</SelectItem>
-                <SelectItem className="cursor-pointer hover:bg-[#a3aed17c]" value="publish|2">2</SelectItem>
+                <SelectItem
+                  className="cursor-pointer hover:bg-gray-200"
+                  value="publish|1"
+                >
+                  1
+                </SelectItem>
+                <SelectItem
+                  className="cursor-pointer hover:bg-gray-200"
+                  value="publish|2"
+                >
+                  2
+                </SelectItem>
               </SelectContent>
             </Select>
-          )}
-        </div>
-        <div className="mr-[10px]">
-          <Select onValueChange={(value) => handleFilter(value, 'sort')}>
-            <SelectTrigger className="w-[180px]">
+          </div>
+        )}
+        <div className="w-full sm:w-auto">
+          <Select onValueChange={(value) => handleFilter(value, "sort")}>
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Sắp xếp theo" />
             </SelectTrigger>
             <SelectContent className="bg-white">
-              {sort && sort.map((item, index) => (
-                <SelectItem key={index} className="cursor-pointer hover:bg-[#a3aed17c]" value={item.value}>
-                  {item.name}
-                </SelectItem>
-              ))}
+              {sort &&
+                sort.map((item, index) => (
+                  <SelectItem
+                    key={index}
+                    className="cursor-pointer hover:bg-gray-200"
+                    value={item.value}
+                  >
+                    {item.name}
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="mr-[10px]">
-          <Input type="text" placeholder="Tìm kiếm trong bảng..." onChange={(e) => { debounceInputSearch(e.target.value); }} />
+        <div className="w-full sm:w-auto">
+          <Input
+            type="text"
+            placeholder="Tìm kiếm trong bảng..."
+            className="w-full"
+            onChange={(e) => {
+              debounceInputSearch(e.target.value);
+            }}
+          />
         </div>
       </div>
-        <div className="p-0">
-          <Button 
-            className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color]"
-            onClick={() => openSheet({open: true, action:'', id:'34535'})} 
-          >
-            <FaPlus />
-            Thêm mới khách sạn
-          </Button>
-        </div>
+
+      {/* Right Section */}
+      <div className="flex w-full sm:w-auto justify-end">
+        <Button
+          className="bg-[--primary-color] text-white hover:bg-[--hover-btn-color] flex items-center gap-2"
+          onClick={() => openSheet({ open: true, action: "", id: "34535" })}
+        >
+          <FaPlus />
+          Thêm mới khách sạn
+        </Button>
+      </div>
     </div>
   );
 };

@@ -44,12 +44,12 @@ const Header = ({
         {/* Sidebar Toggle Icon */}
         {isSidebarOpen ? (
           <RiMenu3Fill
-            className="text-[30px] cursor-pointer"
+            className="text-[30px] cursor-pointer openside"
             onClick={toggleSidebar}
           />
         ) : (
           <RiMenu2Fill
-            className="text-[30px] cursor-pointer"
+            className="text-[30px] cursor-pointer "
             onClick={toggleSidebar}
           />
         )}
@@ -68,24 +68,26 @@ const Header = ({
               </span>
             </Link>
           </div>
-          <div className="shortcut-dropdown">
+          {/* <div className="shortcut-dropdown">
             <Link to="/" className="header-link flex ">
               <CiGrid41 className="cursor-pointer header-link-icon" />
             </Link>
-          </div>
-          <div className="shortcut-dropdown">
+          </div> */}
+          {/* <div className="shortcut-dropdown">
             <Link to="/" className="header-link flex">
               <BsFullscreenExit className="cursor-pointer header-link-icon" />
             </Link>
-          </div>
+          </div> */}
           <div className="profile">
             <DropdownMenu>
               <DropdownMenuTrigger className="flex">
                 <Avatar className="mr-3">
                   <AvatarImage src={avatar_url} alt={`${name}'s avatar`} />
-                  <AvatarFallback>{name?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+                  <AvatarFallback>
+                    {name?.[0]?.toUpperCase() || "U"}
+                  </AvatarFallback>
                 </Avatar>
-                <div className="profile-content text-left">
+                <div className="profile-content text-left hidden sm:block">
                   <div className="font-semibold">{name || "Unknown User"}</div>
                   <div className="role text-xs text-[#536485]">
                     {management_level}
