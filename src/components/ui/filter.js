@@ -93,7 +93,7 @@ const Filter = ({ isAnyChecked, checkedState, handleQueryString, openSheet }) =>
 
     {/* Phần Vai trò */}
     {isIndexPage && (
-      <div className="w-full sm:w-auto mr-[10px]">
+      <div className="w-full sm:w-auto mt-3 mr-[10px]">
         <Select onValueChange={(value) => handleFilter(value, 'role')}>
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Tất cả vai trò" />
@@ -125,7 +125,7 @@ const Filter = ({ isAnyChecked, checkedState, handleQueryString, openSheet }) =>
     </div> */}
 
     {/* Phần Tìm kiếm */}
-    <div className="w-full sm:w-auto mr-[10px]">
+    <div className="w-full sm:w-auto mt-3 mr-[10px]">
       <Input
         type="text"
         placeholder="Tìm kiếm trong bảng..."
